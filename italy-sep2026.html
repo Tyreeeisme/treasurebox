@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>意大利15日艺术之旅 | 2026.09.24 – 10.08</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --seg1: oklch(0.62 0.16 70);
+            --seg1-light: oklch(0.72 0.12 70);
+            --seg1-dark: oklch(0.42 0.12 70);
+            --seg2: oklch(0.58 0.14 25);
+            --seg2-light: oklch(0.68 0.10 25);
+            --seg2-dark: oklch(0.40 0.10 25);
+            --seg3: oklch(0.55 0.18 240);
+            --seg3-light: oklch(0.65 0.14 240);
+            --seg3-dark: oklch(0.38 0.14 240);
+            --seg4: oklch(0.52 0.20 15);
+            --seg4-light: oklch(0.62 0.16 15);
+            --seg4-dark: oklch(0.36 0.16 15);
+            --bg-primary: oklch(0.15 0.01 260);
+            --bg-card: oklch(0.20 0.01 260);
+            --bg-card-hover: oklch(0.23 0.01 260);
+            --text-primary: oklch(0.92 0.01 90);
+            --text-secondary: oklch(0.72 0.01 90);
+            --text-muted: oklch(0.55 0.01 90);
+            --border-subtle: oklch(0.30 0.01 260);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            background:
+                radial-gradient(ellipse at 20% 50%, oklch(0.25 0.08 70 / 0.3), transparent 50%),
+                radial-gradient(ellipse at 80% 30%, oklch(0.25 0.08 240 / 0.3), transparent 50%),
+                radial-gradient(ellipse at 50% 80%, oklch(0.25 0.08 15 / 0.2), transparent 50%),
+                var(--bg-primary);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--seg1);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--seg1-light);
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--seg1-light), var(--seg3-light), var(--seg4-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-dates {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .hero-stats {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-route {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .hero-route span {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            background: oklch(0.25 0.02 260);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .hero-route .arrow {
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        /* Timeline */
+        .timeline-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .timeline-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .timeline-node {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--bg-primary);
+            position: relative;
+            flex-shrink: 0;
+            cursor: default;
+            transition: transform 0.2s;
+        }
+
+        .timeline-node:hover {
+            transform: scale(1.3);
+        }
+
+        .timeline-node.seg1 { background: var(--seg1); }
+        .timeline-node.seg2 { background: var(--seg2); }
+        .timeline-node.seg3 { background: var(--seg3); }
+        .timeline-node.seg4 { background: var(--seg4); }
+
+        .timeline-connector {
+            width: 24px;
+            height: 3px;
+            flex-shrink: 0;
+        }
+
+        .timeline-connector.seg1 { background: var(--seg1-dark); }
+        .timeline-connector.seg2 { background: var(--seg2-dark); }
+        .timeline-connector.seg3 { background: var(--seg3-dark); }
+        .timeline-connector.seg4 { background: var(--seg4-dark); }
+        .timeline-connector.transition { background: linear-gradient(90deg, var(--seg1-dark), var(--seg2-dark)); }
+        .timeline-connector.transition-23 { background: linear-gradient(90deg, var(--seg2-dark), var(--seg3-dark)); }
+        .timeline-connector.transition-34 { background: linear-gradient(90deg, var(--seg3-dark), var(--seg4-dark)); }
+
+        /* Segments */
+        .segment {
+            padding: 5rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .segment-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .segment-label {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .seg1 .segment-label { background: oklch(0.62 0.16 70 / 0.15); color: var(--seg1-light); border: 1px solid oklch(0.62 0.16 70 / 0.3); }
+        .seg2 .segment-label { background: oklch(0.58 0.14 25 / 0.15); color: var(--seg2-light); border: 1px solid oklch(0.58 0.14 25 / 0.3); }
+        .seg3 .segment-label { background: oklch(0.55 0.18 240 / 0.15); color: var(--seg3-light); border: 1px solid oklch(0.55 0.18 240 / 0.3); }
+        .seg4 .segment-label { background: oklch(0.52 0.20 15 / 0.15); color: var(--seg4-light); border: 1px solid oklch(0.52 0.20 15 / 0.3); }
+
+        .segment-header h2 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .seg1 .segment-header h2 { color: var(--seg1-light); }
+        .seg2 .segment-header h2 { color: var(--seg2-light); }
+        .seg3 .segment-header h2 { color: var(--seg3-light); }
+        .seg4 .segment-header h2 { color: var(--seg4-light); }
+
+        .segment-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Day Cards Grid */
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .day-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.8rem;
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .seg1 .day-card::before { background: linear-gradient(90deg, var(--seg1), var(--seg1-light)); }
+        .seg2 .day-card::before { background: linear-gradient(90deg, var(--seg2), var(--seg2-light)); }
+        .seg3 .day-card::before { background: linear-gradient(90deg, var(--seg3), var(--seg3-light)); }
+        .seg4 .day-card::before { background: linear-gradient(90deg, var(--seg4), var(--seg4-light)); }
+
+        .day-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px oklch(0 0 0 / 0.3);
+        }
+
+        .seg1 .day-card:hover { border-color: oklch(0.62 0.16 70 / 0.4); }
+        .seg2 .day-card:hover { border-color: oklch(0.58 0.14 25 / 0.4); }
+        .seg3 .day-card:hover { border-color: oklch(0.55 0.18 240 / 0.4); }
+        .seg4 .day-card:hover { border-color: oklch(0.52 0.20 15 / 0.4); }
+
+        .day-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .day-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .seg1 .day-number { color: var(--seg1); }
+        .seg2 .day-number { color: var(--seg2); }
+        .seg3 .day-number { color: var(--seg3); }
+        .seg4 .day-number { color: var(--seg4); }
+
+        .day-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 0.2rem 0.6rem;
+            background: oklch(0.25 0.01 260);
+            border-radius: 10px;
+        }
+
+        .day-card-body ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .day-card-body li {
+            padding: 0.4rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .day-card-body li::before {
+            content: '·';
+            position: absolute;
+            left: 0;
+            font-weight: 700;
+        }
+
+        .seg1 .day-card-body li::before { color: var(--seg1); }
+        .seg2 .day-card-body li::before { color: var(--seg2); }
+        .seg3 .day-card-body li::before { color: var(--seg3); }
+        .seg4 .day-card-body li::before { color: var(--seg4); }
+
+        .highlight {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .star {
+            display: inline-block;
+            margin-right: 0.2rem;
+        }
+
+        /* Booking Table */
+        .booking-section {
+            padding: 5rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .booking-section h2 {
+            text-align: center;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .booking-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        .booking-table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .booking-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .booking-table thead {
+            background: oklch(0.22 0.02 260);
+        }
+
+        .booking-table th {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .booking-table td {
+            padding: 1rem 1.2rem;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .booking-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .booking-table tbody tr:hover {
+            background: oklch(0.22 0.01 260);
+        }
+
+        .urgency-tag {
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .urgency-critical {
+            background: oklch(0.52 0.20 15 / 0.15);
+            color: oklch(0.70 0.18 15);
+            border: 1px solid oklch(0.52 0.20 15 / 0.3);
+        }
+
+        .urgency-recommend {
+            background: oklch(0.58 0.14 70 / 0.15);
+            color: oklch(0.72 0.14 70);
+            border: 1px solid oklch(0.58 0.14 70 / 0.3);
+        }
+
+        .urgency-flexible {
+            background: oklch(0.55 0.14 150 / 0.15);
+            color: oklch(0.70 0.14 150);
+            border: 1px solid oklch(0.55 0.14 150 / 0.3);
+        }
+
+        .channel-link {
+            font-size: 0.82rem;
+            color: var(--seg3-light);
+            word-break: break-all;
+        }
+
+        /* Hotel Section */
+        .hotel-section {
+            padding: 5rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .hotel-section h2 {
+            text-align: center;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .hotel-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        .hotel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .hotel-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.8rem;
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px oklch(0 0 0 / 0.25);
+        }
+
+        .hotel-card-city {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+
+        .hotel-card-nights {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .hotel-card-area {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            padding: 0.6rem 0.9rem;
+            background: oklch(0.25 0.01 260);
+            border-radius: 10px;
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .hotel-card-area strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .hotel-tier {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0;
+            border-top: 1px solid oklch(0.28 0.01 260);
+            font-size: 0.88rem;
+        }
+
+        .hotel-tier:first-of-type {
+            border-top: none;
+        }
+
+        .tier-badge {
+            font-size: 0.72rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .tier-luxury {
+            background: oklch(0.62 0.16 70 / 0.15);
+            color: var(--seg1-light);
+        }
+
+        .tier-mid {
+            background: oklch(0.55 0.18 240 / 0.15);
+            color: var(--seg3-light);
+        }
+
+        .tier-budget {
+            background: oklch(0.55 0.14 150 / 0.15);
+            color: oklch(0.70 0.14 150);
+        }
+
+        .hotel-name {
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .hotel-price {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        /* Practical Info */
+        .practical-section {
+            padding: 5rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .practical-section h2 {
+            text-align: center;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+        }
+
+        .practical-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .practical-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .practical-card h4 {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--seg3-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .practical-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer .footer-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 3rem 1.5rem;
+                min-height: 90vh;
+            }
+
+            .day-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hotel-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .practical-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-bar {
+                justify-content: flex-start;
+                padding: 2rem 1rem;
+            }
+
+            .timeline-node {
+                width: 28px;
+                height: 28px;
+                font-size: 0.6rem;
+            }
+
+            .timeline-connector {
+                width: 12px;
+            }
+
+            .segment {
+                padding: 3rem 1.5rem;
+            }
+
+            .booking-table {
+                font-size: 0.8rem;
+            }
+
+            .booking-table th,
+            .booking-table td {
+                padding: 0.7rem 0.8rem;
+            }
+
+            .hero-route span {
+                font-size: 0.82rem;
+                padding: 0.2rem 0.6rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .day-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .day-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">Art · Architecture · History</div>
+        <h1>意大利15日艺术之旅</h1>
+        <p class="hero-dates">2026.09.24 – 10.08</p>
+        <p class="hero-stats">15天 · 14晚 · 6城 · 4段旅程</p>
+        <div class="hero-route">
+            <span>米兰</span><span class="arrow">→</span>
+            <span>佛罗伦萨</span><span class="arrow">→</span>
+            <span>托斯卡纳</span><span class="arrow">→</span>
+            <span>那不勒斯</span><span class="arrow">→</span>
+            <span>西西里</span><span class="arrow">→</span>
+            <span>罗马</span>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="timeline-section fade-in">
+        <div class="timeline-bar">
+            <div class="timeline-node seg1">1</div>
+            <div class="timeline-connector seg1"></div>
+            <div class="timeline-node seg1">2</div>
+            <div class="timeline-connector seg1"></div>
+            <div class="timeline-node seg1">3</div>
+            <div class="timeline-connector seg1"></div>
+            <div class="timeline-node seg1">4</div>
+            <div class="timeline-connector seg1"></div>
+            <div class="timeline-node seg1">5</div>
+            <div class="timeline-connector transition"></div>
+            <div class="timeline-node seg2">6</div>
+            <div class="timeline-connector seg2"></div>
+            <div class="timeline-node seg2">7</div>
+            <div class="timeline-connector seg2"></div>
+            <div class="timeline-node seg2">8</div>
+            <div class="timeline-connector transition-23"></div>
+            <div class="timeline-node seg3">9</div>
+            <div class="timeline-connector seg3"></div>
+            <div class="timeline-node seg3">10</div>
+            <div class="timeline-connector seg3"></div>
+            <div class="timeline-node seg3">11</div>
+            <div class="timeline-connector seg3"></div>
+            <div class="timeline-node seg3">12</div>
+            <div class="timeline-connector seg3"></div>
+            <div class="timeline-node seg3">13</div>
+            <div class="timeline-connector transition-34"></div>
+            <div class="timeline-node seg4">14</div>
+            <div class="timeline-connector seg4"></div>
+            <div class="timeline-node seg4">15</div>
+        </div>
+    </section>
+
+    <!-- Segment 1: 北意与文艺复兴 -->
+    <section class="segment seg1">
+        <div class="segment-header fade-in">
+            <div class="segment-label">SEGMENT 1 · D1–D5</div>
+            <h2>北意与文艺复兴</h2>
+            <p class="segment-subtitle">米兰 · 佛罗伦萨 · 托斯卡纳</p>
+        </div>
+        <div class="day-grid">
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D1</span>
+                    <span class="day-date">9月24日 周四</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>上海 ✈ 米兰马尔彭萨机场</li>
+                        <li class="highlight">米兰大教堂 — 哥特建筑巅峰</li>
+                        <li>Navigli 运河区 — 晚餐与散步</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D2</span>
+                    <span class="day-date">9月25日 周五</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li><span class="star">⭐</span><span class="highlight">最后的晚餐 — 达·芬奇旷世杰作</span></li>
+                        <li><span class="star">⭐</span><span class="highlight">布雷拉美术馆</span></li>
+                        <li>斯福尔扎城堡 — 米开朗基罗晚期作品</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D3</span>
+                    <span class="day-date">9月26日 周六</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>米兰 → 佛罗伦萨（高铁 1h55m）</li>
+                        <li><span class="star">⭐</span><span class="highlight">乌菲兹美术馆 — 波提切利·拉斐尔</span></li>
+                        <li>老桥（Ponte Vecchio）日落</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D4</span>
+                    <span class="day-date">9月27日 周日</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li><span class="star">⭐</span><span class="highlight">学院美术馆 — 大卫像真迹</span></li>
+                        <li>圣母百花大教堂登顶 — 穹顶俯瞰全城</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D5</span>
+                    <span class="day-date">9月28日 周一</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>托斯卡纳一日游</li>
+                        <li>锡耶纳 — 贝壳广场与大教堂</li>
+                        <li>圣吉米亚诺 — 中世纪塔楼小城</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Segment 2: 南意艳阳 -->
+    <section class="segment seg2">
+        <div class="segment-header fade-in">
+            <div class="segment-label">SEGMENT 2 · D6–D8</div>
+            <h2>南意艳阳</h2>
+            <p class="segment-subtitle">那不勒斯 · 卡普里 · 庞贝</p>
+        </div>
+        <div class="day-grid">
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D6</span>
+                    <span class="day-date">9月29日 周二</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>佛罗伦萨 → 那不勒斯（高铁 2h40m）</li>
+                        <li><span class="star">⭐</span><span class="highlight">MANN 国家考古博物馆</span></li>
+                        <li>Spaccanapoli 老城漫步</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D7</span>
+                    <span class="day-date">9月30日 周三</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>卡普里岛一日游</li>
+                        <li class="highlight">蓝洞 — 天然光影奇迹</li>
+                        <li>索拉罗山缆车 — 俯瞰那不勒斯湾</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D8</span>
+                    <span class="day-date">10月1日 周四</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li class="highlight">庞贝古城 — 千年火山灰下的罗马世界</li>
+                        <li>晚间飞巴勒莫（1h）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Segment 3: 西西里深度 -->
+    <section class="segment seg3">
+        <div class="segment-header fade-in">
+            <div class="segment-label">SEGMENT 3 · D9–D13</div>
+            <h2>西西里深度</h2>
+            <p class="segment-subtitle">巴勒莫 · 切法卢 · 陶尔米纳 · 锡拉库扎</p>
+        </div>
+        <div class="day-grid">
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D9</span>
+                    <span class="day-date">10月2日 周五</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li><span class="star">⭐</span><span class="highlight">诺曼宫 & 帕拉提纳礼拜堂</span></li>
+                        <li class="highlight">蒙雷阿莱大教堂 — 拜占庭金色马赛克</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D10</span>
+                    <span class="day-date">10月3日 周六</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>切法卢一日游</li>
+                        <li class="highlight">《天堂电影院》取景地</li>
+                        <li>La Rocca 山顶 — 俯瞰第勒尼安海</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D11</span>
+                    <span class="day-date">10月4日 周日</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>巴勒莫 → 陶尔米纳（大巴 3.5h）</li>
+                        <li class="highlight">古希腊剧场 — 以埃特纳火山为幕</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D12</span>
+                    <span class="day-date">10月5日 周一</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>锡拉库扎一日游</li>
+                        <li class="highlight">奥提伽岛 — 阿基米德故乡</li>
+                        <li>《西西里的美丽传说》取景地</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D13</span>
+                    <span class="day-date">10月6日 周二</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li>陶尔米纳休整 · 自由活动</li>
+                        <li>卡塔尼亚机场 ✈ 罗马（1.5h）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Segment 4: 帝国终章·罗马 -->
+    <section class="segment seg4">
+        <div class="segment-header fade-in">
+            <div class="segment-label">SEGMENT 4 · D14–D15</div>
+            <h2>帝国终章 · 罗马</h2>
+            <p class="segment-subtitle">永恒之城的最后乐章</p>
+        </div>
+        <div class="day-grid">
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D14</span>
+                    <span class="day-date">10月7日 周三</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li><span class="star">⭐</span><span class="highlight">斗兽场套票 — 地下层+竞技场+帕拉丁山</span></li>
+                        <li>万神殿 — 两千年穹顶奇迹</li>
+                        <li>许愿池 · 纳沃纳广场</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="day-card fade-in">
+                <div class="day-card-header">
+                    <span class="day-number">D15</span>
+                    <span class="day-date">10月8日 周四</span>
+                </div>
+                <div class="day-card-body">
+                    <ul>
+                        <li><span class="star">⭐</span><span class="highlight">梵蒂冈博物馆 — 西斯廷礼拜堂</span></li>
+                        <li><span class="star">⭐</span><span class="highlight">博尔盖塞美术馆 — 贝尼尼·卡拉瓦乔</span></li>
+                        <li>圣彼得大教堂 — 米开朗基罗《圣殇》</li>
+                        <li>✈ 离境回国</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Checklist -->
+    <section class="booking-section">
+        <h2 class="fade-in">预订清单</h2>
+        <p class="booking-subtitle fade-in">按紧急程度排列，越早越好</p>
+        <div class="booking-table-wrapper fade-in">
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>紧急度</th>
+                        <th>项目</th>
+                        <th>渠道</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="urgency-tag urgency-critical">🔴 必抢</span></td>
+                        <td>米兰《最后的晚餐》</td>
+                        <td><span class="channel-link">cenacolovinciano.vivaticket.it</span></td>
+                        <td>每季度放票秒空，闹钟蹲点</td>
+                    </tr>
+                    <tr>
+                        <td><span class="urgency-tag urgency-critical">🔴 必抢</span></td>
+                        <td>博尔盖塞美术馆</td>
+                        <td><span class="channel-link">tosc.it</span></td>
+                        <td>提前 30-45 天抢票</td>
+                    </tr>
+                    <tr>
+                        <td><span class="urgency-tag urgency-critical">🔴 必抢</span></td>
+                        <td>梵蒂冈博物馆</td>
+                        <td><span class="channel-link">tickets.museivaticani.va</span></td>
+                        <td>提前 60 天开放预约</td>
+                    </tr>
+                    <tr>
+                        <td><span class="urgency-tag urgency-recommend">🟠 建议早订</span></td>
+                        <td>乌菲兹 + 学院美术馆</td>
+                        <td><span class="channel-link">b-ticket.com/uffizi</span></td>
+                        <td>选时段，避开周末上午</td>
+                    </tr>
+                    <tr>
+                        <td><span class="urgency-tag urgency-recommend">🟠 建议早订</span></td>
+                        <td>斗兽场套票</td>
+                        <td><span class="channel-link">ticketing.colosseo.it</span></td>
+                        <td>需护照原件，选 Full Experience</td>
+                    </tr>
+                    <tr>
+                        <td><span class="urgency-tag urgency-recommend">🟠 建议早订</span></td>
+                        <td>那不勒斯 MANN</td>
+                        <td><span class="channel-link">museoarcheologiconapoli.it</span></td>
+                        <td>线上购票免排队</td>
+                    </tr>
+                    <tr>
+                        <td><span class="urgency-tag urgency-flexible">🟢 可现场</span></td>
+                        <td>庞贝古城 / 陶尔米纳剧场 / 切法卢教堂</td>
+                        <td>—</td>
+                        <td>旺季建议线上，淡季可现场</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Hotel Recommendations -->
+    <section class="hotel-section">
+        <h2 class="fade-in">住宿推荐</h2>
+        <p class="hotel-subtitle fade-in">按行程段落划分，三档预算参考</p>
+        <div class="hotel-grid">
+            <!-- 米兰 -->
+            <div class="hotel-card fade-in">
+                <div class="hotel-card-city">米兰</div>
+                <div class="hotel-card-nights">2晚 · D1–D2</div>
+                <div class="hotel-card-area">
+                    <strong>推荐区域:</strong> Duomo / 中央车站区 — 步行可达大教堂和布雷拉，交通便利
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-luxury">奢华</span>
+                    <span class="hotel-name">Park Hyatt Milano</span>
+                    <span class="hotel-price">€450–650/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-mid">中档</span>
+                    <span class="hotel-name">NYX Hotel Milan</span>
+                    <span class="hotel-price">€150–250/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-budget">经济</span>
+                    <span class="hotel-name">Ostello Bello Grande</span>
+                    <span class="hotel-price">€60–100/晚</span>
+                </div>
+            </div>
+            <!-- 佛罗伦萨 -->
+            <div class="hotel-card fade-in">
+                <div class="hotel-card-city">佛罗伦萨</div>
+                <div class="hotel-card-nights">3晚 · D3–D5</div>
+                <div class="hotel-card-area">
+                    <strong>推荐区域:</strong> Santa Maria Novella 车站周边 / 历史中心 — 步行可达所有景点
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-luxury">奢华</span>
+                    <span class="hotel-name">Hotel Lungarno</span>
+                    <span class="hotel-price">€500–800/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-mid">中档</span>
+                    <span class="hotel-name">Hotel Davanzati</span>
+                    <span class="hotel-price">€180–280/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-budget">经济</span>
+                    <span class="hotel-name">Plus Florence Hostel</span>
+                    <span class="hotel-price">€50–90/晚</span>
+                </div>
+            </div>
+            <!-- 那不勒斯 -->
+            <div class="hotel-card fade-in">
+                <div class="hotel-card-city">那不勒斯</div>
+                <div class="hotel-card-nights">2晚 · D6–D7</div>
+                <div class="hotel-card-area">
+                    <strong>推荐区域:</strong> 中央车站 / 海滨区 (Lungomare) — 靠近港口去卡普里方便
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-luxury">奢华</span>
+                    <span class="hotel-name">Grand Hotel Vesuvio</span>
+                    <span class="hotel-price">€350–550/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-mid">中档</span>
+                    <span class="hotel-name">Hotel Piazza Bellini</span>
+                    <span class="hotel-price">€120–200/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-budget">经济</span>
+                    <span class="hotel-name">Hostel of the Sun</span>
+                    <span class="hotel-price">€40–70/晚</span>
+                </div>
+            </div>
+            <!-- 巴勒莫 -->
+            <div class="hotel-card fade-in">
+                <div class="hotel-card-city">巴勒莫</div>
+                <div class="hotel-card-nights">2晚 · D8–D10</div>
+                <div class="hotel-card-area">
+                    <strong>推荐区域:</strong> 老城 / 诺曼宫附近 — 步行可达主要景点和市场
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-luxury">奢华</span>
+                    <span class="hotel-name">Grand Hotel Piazza Borsa</span>
+                    <span class="hotel-price">€200–350/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-mid">中档</span>
+                    <span class="hotel-name">Hotel Porta Felice</span>
+                    <span class="hotel-price">€100–180/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-budget">经济</span>
+                    <span class="hotel-name">A Casa di Amici Hostel</span>
+                    <span class="hotel-price">€35–60/晚</span>
+                </div>
+            </div>
+            <!-- 陶尔米纳 -->
+            <div class="hotel-card fade-in">
+                <div class="hotel-card-city">陶尔米纳</div>
+                <div class="hotel-card-nights">2晚 · D11–D12</div>
+                <div class="hotel-card-area">
+                    <strong>推荐区域:</strong> 历史中心 / Corso Umberto 附近 — 海景+步行可达剧场
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-luxury">奢华</span>
+                    <span class="hotel-name">Belmond Grand Hotel Timeo</span>
+                    <span class="hotel-price">€600–1000/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-mid">中档</span>
+                    <span class="hotel-name">Hotel Villa Schuler</span>
+                    <span class="hotel-price">€150–250/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-budget">经济</span>
+                    <span class="hotel-name">Hostel Taormina</span>
+                    <span class="hotel-price">€45–80/晚</span>
+                </div>
+            </div>
+            <!-- 罗马 -->
+            <div class="hotel-card fade-in">
+                <div class="hotel-card-city">罗马</div>
+                <div class="hotel-card-nights">2晚 · D13–D15（最后一晚飞机上）</div>
+                <div class="hotel-card-area">
+                    <strong>推荐区域:</strong> Termini 车站 / 斗兽场周边 — 地铁直达梵蒂冈和机场快线
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-luxury">奢华</span>
+                    <span class="hotel-name">Hotel de Russie</span>
+                    <span class="hotel-price">€500–800/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-mid">中档</span>
+                    <span class="hotel-name">Hotel Artemide</span>
+                    <span class="hotel-price">€180–300/晚</span>
+                </div>
+                <div class="hotel-tier">
+                    <span class="tier-badge tier-budget">经济</span>
+                    <span class="hotel-name">The Yellow Hostel</span>
+                    <span class="hotel-price">€40–70/晚</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Practical Info -->
+    <section class="practical-section">
+        <h2 class="fade-in">实用信息</h2>
+        <div class="practical-grid">
+            <div class="practical-card fade-in">
+                <h4>签证</h4>
+                <p>申根签证（意大利签证中心申请）。准备行程单、酒店确认函、保险单、在职证明。出签约 7-15 工作日。</p>
+            </div>
+            <div class="practical-card fade-in">
+                <h4>交通</h4>
+                <p>意铁 Trenitalia / Italo 高铁 + 西西里城际大巴（SAIS/Interbus）+ 2 段内陆航班（那不勒斯→巴勒莫, 卡塔尼亚→罗马）。提前购票享早鸟折扣。</p>
+            </div>
+            <div class="practical-card fade-in">
+                <h4>天气</h4>
+                <p>9 月底–10 月初，温度 18–26°C，阳光充沛偶有阵雨。南部和西西里更温暖。建议携带薄外套和遮阳帽。</p>
+            </div>
+            <div class="practical-card fade-in">
+                <h4>预算参考</h4>
+                <p>人均约 ¥35,000–50,000（不含国际机票）。涵盖住宿、餐饮、交通、门票。奢华档位上浮约 50%。</p>
+            </div>
+            <div class="practical-card fade-in">
+                <h4>语言</h4>
+                <p>意大利语为主，旅游区英语可通。建议下载 Google Translate 离线意大利语包。学几句基本问候很加分。</p>
+            </div>
+            <div class="practical-card fade-in">
+                <h4>电话卡</h4>
+                <p>Vodafone / TIM 旅游 SIM 卡，机场到达大厅可购。建议 30 天 / 50GB 套餐，约 €20–30。支持欧盟漫游。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-title">Buon Viaggio!</p>
+        <p>意大利15日艺术之旅 · 2026.09.24 – 10.08</p>
+        <p>米兰 → 佛罗伦萨 → 托斯卡纳 → 那不勒斯 → 西西里 → 罗马</p>
+        <p style="margin-top: 1.5rem; font-size: 0.75rem; color: oklch(0.4 0.01 260);">行程规划仅供参考 · 价格为估算 · 请以实际预订为准</p>
+    </footer>
+
+    <!-- IntersectionObserver for fade-in animations -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -60px 0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        // Stagger animation for cards in same section
+                        const siblings = entry.target.parentElement.querySelectorAll('.fade-in');
+                        const siblingIndex = Array.from(siblings).indexOf(entry.target);
+                        const delay = siblingIndex * 80;
+
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, delay);
+
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>
