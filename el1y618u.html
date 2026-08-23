@@ -907,14 +907,14 @@
                     <textarea id="inputLink" placeholder="订单号、确认码、座位区域、票价、购票渠道等"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>上传截图/图片（可多选）</label>
+                    <label>上传截图/图片/PDF（可多选）</label>
                     <div class="upload-area" id="uploadArea">
-                        <input type="file" id="inputImages" accept="image/*" multiple style="display:none">
+                        <input type="file" id="inputImages" accept="image/*,.pdf,application/pdf" multiple style="display:none">
                         <div class="upload-placeholder" id="uploadPlaceholder">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
                                 <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
                             </svg>
-                            <span>点击或拖拽图片到此处</span>
+                            <span>点击或拖拽图片/PDF到此处</span>
                         </div>
                         <div class="upload-preview" id="uploadPreview"></div>
                     </div>
@@ -1409,7 +1409,12 @@
                                     </div>
                                     ${(ticket.images && ticket.images.length > 0) ? `
                                         <div class="detail-images">
-                                            ${(Array.isArray(ticket.images) ? ticket.images : ticket.images.split(',').map(s=>s.trim()).filter(Boolean)).map((url, idx) => `<img src="${escapeHtml(url)}" alt="截图 ${idx+1}" onclick="openLightbox('${escapeHtml(url)}')" onerror="this.style.display='none'">`).join('')}
+                                            ${(Array.isArray(ticket.images) ? ticket.images : ticket.images.split(',').map(s=>s.trim()).filter(Boolean)).map((url, idx) => {
+                                                if (url.startsWith('data:application/pdf')) {
+                                                    return `<a href="${url}" download="附件${idx+1}.pdf" style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:120px;height:80px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);text-decoration:none;gap:4px;cursor:pointer;transition:all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"><svg viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="1.5" width="28" height="28"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg><span style="font-size:0.68rem;color:var(--ink-muted)">PDF ${idx+1}</span></a>`;
+                                                }
+                                                return `<img src="${escapeHtml(url)}" alt="截图 ${idx+1}" onclick="openLightbox('${escapeHtml(url)}')" onerror="this.style.display='none'">`;
+                                            }).join('')}
                                         </div>
                                     ` : ''}
                                     <div class="ticket-actions">
@@ -1550,12 +1555,23 @@
         const uploadPlaceholder = document.getElementById('uploadPlaceholder');
 
         function renderUploadPreview() {
-            uploadPreview.innerHTML = pendingImages.map((src, idx) => `
-                <div class="upload-preview-item">
-                    <img src="${src}" alt="预览${idx+1}">
-                    <button class="remove-img" onclick="removeUploadImage(event, ${idx})">×</button>
-                </div>
-            `).join('');
+            uploadPreview.innerHTML = pendingImages.map((src, idx) => {
+                const isPdf = src.startsWith('data:application/pdf');
+                if (isPdf) {
+                    return `
+                        <div class="upload-preview-item" style="display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);border-radius:4px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.5" width="32" height="32"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg>
+                            <button class="remove-img" onclick="removeUploadImage(event, ${idx})">×</button>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="upload-preview-item">
+                        <img src="${src}" alt="预览${idx+1}">
+                        <button class="remove-img" onclick="removeUploadImage(event, ${idx})">×</button>
+                    </div>
+                `;
+            }).join('');
             uploadPlaceholder.style.display = pendingImages.length > 0 ? 'none' : 'flex';
         }
 
@@ -1568,9 +1584,12 @@
 
         function handleFiles(files) {
             Array.from(files).forEach(file => {
-                if (!file.type.startsWith('image/')) return;
-                if (pendingImages.length >= 5) { alert('最多上传 5 张图片'); return; }
-                if (file.size > 2 * 1024 * 1024) { alert(`${file.name} 超过 2MB，请压缩后重试`); return; }
+                const isImage = file.type.startsWith('image/');
+                const isPdf = file.type === 'application/pdf';
+                if (!isImage && !isPdf) return;
+                if (pendingImages.length >= 5) { alert('最多上传 5 个文件'); return; }
+                const sizeLimit = isPdf ? 5 * 1024 * 1024 : 2 * 1024 * 1024;
+                if (file.size > sizeLimit) { alert(`${file.name} 超过 ${isPdf ? '5' : '2'}MB，请压缩后重试`); return; }
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     pendingImages.push(ev.target.result);
