@@ -597,6 +597,61 @@
             box-shadow: var(--shadow-md);
         }
 
+        .pdf-card {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 140px;
+            height: 90px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pdf-card:hover, .pdf-card:active {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+            background: var(--accent-light);
+        }
+
+        .pdf-card-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .pdf-card-action {
+            font-size: 0.68rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .pdf-link-card {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 160px;
+            height: 90px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid #c44536;
+            background: #fef2f0;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .pdf-link-card:hover, .pdf-link-card:active {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+            background: var(--accent-light);
+        }
+
         .ticket-actions {
             display: flex;
             gap: 8px;
@@ -935,6 +990,10 @@
                 <div class="form-group">
                     <label id="labelLink">购票信息</label>
                     <textarea id="inputLink" placeholder="订单号、确认码、座位区域、票价、购票渠道等"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>PDF/票据链接（粘贴邮件中的链接，iOS推荐）</label>
+                    <input type="url" id="inputPdfLink" placeholder="https://... 粘贴确认邮件中的PDF链接">
                 </div>
                 <div class="form-group">
                     <label>上传截图/图片/PDF（可多选）</label>
@@ -1437,11 +1496,23 @@
                                             <p style="white-space:pre-wrap">${ticket.notes ? escapeHtml(ticket.notes) : '—'}</p>
                                         </div>
                                     </div>
+                                    ${ticket.pdfLink ? `
+                                        <div class="detail-images">
+                                            <a href="${escapeHtml(ticket.pdfLink)}" target="_blank" rel="noopener" class="pdf-link-card">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="1.5" width="32" height="32"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg>
+                                                <span class="pdf-card-label">PDF 票据链接</span>
+                                                <span class="pdf-card-action">点击打开 ↗</span>
+                                            </a>
+                                        </div>
+                                    ` : ''}
                                     ${(ticket.images && ticket.images.filter(u => u && u !== '[IMG_TOO_LARGE]').length > 0) ? `
                                         <div class="detail-images">
                                             ${(Array.isArray(ticket.images) ? ticket.images : ticket.images.split(',').map(s=>s.trim()).filter(Boolean)).filter(u => u && u !== '[IMG_TOO_LARGE]').map((url, idx) => {
                                                 if (url.startsWith('data:application/pdf')) {
-                                                    return `<div style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:120px;height:80px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);gap:2px;cursor:pointer;transition:all 0.2s ease;position:relative;" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'" onclick="openPdf('${ticket.id}',${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="1.5" width="28" height="28"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg><span style="font-size:0.68rem;color:var(--ink-muted)">点击查看 PDF</span></div>`;
+                                                    return `<div class="pdf-card" onclick="openPdf('${ticket.id}',${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="1.5" width="32" height="32"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg><span class="pdf-card-label">PDF 票据 ${idx+1}</span><span class="pdf-card-action">点击查看/下载</span></div>`;
+                                                }
+                                                if (url.startsWith('http://') || url.startsWith('https://')) {
+                                                    return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="pdf-link-card"><svg viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="1.5" width="32" height="32"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg><span class="pdf-card-label">在线票据</span><span class="pdf-card-action">点击打开 ↗</span></a>`;
                                                 }
                                                 return `<img src="${escapeHtml(url)}" alt="截图 ${idx+1}" onclick="openLightbox('${escapeHtml(url)}')" onerror="this.style.display='none'">`;
                                             }).join('')}
@@ -1496,6 +1567,7 @@
             document.getElementById('inputDate').value = ticket.date || '';
             document.getElementById('inputVenue').value = ticket.venue || '';
             document.getElementById('inputLink').value = ticket.link || '';
+            document.getElementById('inputPdfLink').value = ticket.pdfLink || '';
             document.getElementById('inputNotes').value = ticket.notes || '';
             pendingImages = Array.isArray(ticket.images) ? [...ticket.images] : [];
             renderUploadPreview();
@@ -1533,6 +1605,7 @@
                 date: document.getElementById('inputDate').value,
                 venue: document.getElementById('inputVenue').value.trim(),
                 link: document.getElementById('inputLink').value.trim(),
+                pdfLink: document.getElementById('inputPdfLink').value.trim(),
                 images: [...pendingImages],
                 notes: document.getElementById('inputNotes').value.trim(),
             };
@@ -1579,86 +1652,75 @@
             if (!ticket || !ticket.images || !ticket.images[imgIdx]) return;
             const pdfData = ticket.images[imgIdx];
 
-            // Create a full-screen overlay with embedded PDF viewer
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;inset:0;z-index:250;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;padding:0;';
+            // If it's a URL (not base64), just open it directly
+            if (pdfData.startsWith('http://') || pdfData.startsWith('https://')) {
+                window.open(pdfData, '_blank');
+                return;
+            }
 
-            // Top bar with close & download buttons
-            const topBar = document.createElement('div');
-            topBar.style.cssText = 'width:100%;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;';
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-            const closeBtn = document.createElement('button');
-            closeBtn.textContent = '✕ 关闭';
-            closeBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:0.9rem;cursor:pointer;font-family:inherit;';
-            closeBtn.onclick = () => document.body.removeChild(overlay);
-
-            const downloadBtn = document.createElement('a');
-            downloadBtn.href = pdfData;
-            downloadBtn.download = `${ticket.name}_票据.pdf`;
-            downloadBtn.textContent = '⬇ 下载';
-            downloadBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:0.9rem;cursor:pointer;text-decoration:none;font-family:inherit;';
-
-            topBar.appendChild(closeBtn);
-            topBar.appendChild(downloadBtn);
-            overlay.appendChild(topBar);
-
-            // Try iframe embed first (works on most desktop + Android)
-            const iframe = document.createElement('iframe');
-            iframe.src = pdfData;
-            iframe.style.cssText = 'flex:1;width:100%;border:none;background:white;border-radius:8px;margin:0 8px 8px;';
-            overlay.appendChild(iframe);
-
-            // Fallback for iOS: if iframe doesn't render PDF, show object tag
-            // iOS Safari supports <object> with data URLs better in some versions
-            iframe.onerror = () => {
-                overlay.removeChild(iframe);
-                const obj = document.createElement('object');
-                obj.data = pdfData;
-                obj.type = 'application/pdf';
-                obj.style.cssText = 'flex:1;width:100%;border:none;background:white;border-radius:8px;margin:0 8px 8px;';
-                obj.innerHTML = '<p style="padding:40px;text-align:center;color:#666;">无法预览PDF，请点击上方"下载"按钮查看</p>';
-                overlay.appendChild(obj);
-            };
-
-            // For iOS Safari: detect if iframe loaded empty, provide Google Docs viewer fallback or download prompt
-            setTimeout(() => {
+            if (isIOS) {
+                // iOS approach: convert base64 to Blob, then create object URL and navigate
                 try {
-                    // Check if we're on iOS
-                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                    if (isIOS) {
-                        // On iOS, replace iframe with a direct approach: open data URL directly
-                        overlay.removeChild(iframe);
-                        const container = document.createElement('div');
-                        container.style.cssText = 'flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px;';
-
-                        // Create an embed element (iOS sometimes handles this)
-                        const embed = document.createElement('embed');
-                        embed.src = pdfData;
-                        embed.type = 'application/pdf';
-                        embed.style.cssText = 'width:100%;height:100%;border-radius:8px;background:white;';
-
-                        // Also show a "Open in new tab" link as fallback
-                        const fallbackMsg = document.createElement('div');
-                        fallbackMsg.style.cssText = 'text-align:center;color:white;font-size:0.9rem;position:absolute;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);padding:12px 20px;border-radius:8px;';
-                        fallbackMsg.innerHTML = '如果 PDF 未显示，请点击「⬇ 下载」后用系统阅读器打开';
-
-                        container.appendChild(embed);
-                        overlay.appendChild(container);
-                        overlay.appendChild(fallbackMsg);
+                    const base64 = pdfData.split(',')[1];
+                    const byteChars = atob(base64);
+                    const byteNumbers = new Array(byteChars.length);
+                    for (let i = 0; i < byteChars.length; i++) {
+                        byteNumbers[i] = byteChars.charCodeAt(i);
                     }
-                } catch(e) {}
-            }, 500);
-
-            // Close on ESC
-            const escHandler = (e) => {
-                if (e.key === 'Escape') {
-                    document.body.removeChild(overlay);
-                    document.removeEventListener('keydown', escHandler);
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'application/pdf' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    // On iOS Safari, navigating to blob URL opens PDF natively
+                    window.location.href = blobUrl;
+                } catch(e) {
+                    // Fallback: try opening data URL directly
+                    const w = window.open('', '_blank');
+                    if (w) {
+                        w.document.write(`<html><head><title>PDF</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5;font-family:system-ui"><div style="text-align:center;padding:40px"><h2>PDF 票据</h2><p style="color:#666;margin:16px 0">iOS 无法直接预览，请下载查看</p><a href="${pdfData}" download="${ticket.name}_票据.pdf" style="display:inline-block;padding:14px 28px;background:#c44536;color:white;border-radius:8px;text-decoration:none;font-size:1rem">⬇ 下载PDF</a></div></body></html>`);
+                        w.document.close();
+                    } else {
+                        showToast('请允许弹出窗口后重试');
+                    }
                 }
-            };
-            document.addEventListener('keydown', escHandler);
+            } else {
+                // Desktop / Android: full-screen overlay with iframe
+                const overlay = document.createElement('div');
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:250;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;padding:0;';
 
-            document.body.appendChild(overlay);
+                const topBar = document.createElement('div');
+                topBar.style.cssText = 'width:100%;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;';
+
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = '✕ 关闭';
+                closeBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:0.9rem;cursor:pointer;font-family:inherit;';
+                closeBtn.onclick = () => document.body.removeChild(overlay);
+
+                const downloadBtn = document.createElement('a');
+                downloadBtn.href = pdfData;
+                downloadBtn.download = `${ticket.name}_票据.pdf`;
+                downloadBtn.textContent = '⬇ 下载';
+                downloadBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:0.9rem;cursor:pointer;text-decoration:none;font-family:inherit;';
+
+                topBar.appendChild(closeBtn);
+                topBar.appendChild(downloadBtn);
+                overlay.appendChild(topBar);
+
+                const iframe = document.createElement('iframe');
+                iframe.src = pdfData;
+                iframe.style.cssText = 'flex:1;width:100%;border:none;background:white;border-radius:8px;margin:0 8px 8px;';
+                overlay.appendChild(iframe);
+
+                const escHandler = (e) => {
+                    if (e.key === 'Escape') {
+                        document.body.removeChild(overlay);
+                        document.removeEventListener('keydown', escHandler);
+                    }
+                };
+                document.addEventListener('keydown', escHandler);
+                document.body.appendChild(overlay);
+            }
         }
 
         lightbox.addEventListener('click', () => {
