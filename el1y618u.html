@@ -1441,7 +1441,7 @@
                                         <div class="detail-images">
                                             ${(Array.isArray(ticket.images) ? ticket.images : ticket.images.split(',').map(s=>s.trim()).filter(Boolean)).map((url, idx) => {
                                                 if (url.startsWith('data:application/pdf')) {
-                                                    return `<a href="${url}" download="附件${idx+1}.pdf" style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:120px;height:80px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);text-decoration:none;gap:4px;cursor:pointer;transition:all 0.2s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"><svg viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="1.5" width="28" height="28"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg><span style="font-size:0.68rem;color:var(--ink-muted)">PDF ${idx+1}</span></a>`;
+                                                    return `<div style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:120px;height:80px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);gap:2px;cursor:pointer;transition:all 0.2s ease;position:relative;" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'" onclick="openPdf('${ticket.id}',${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="1.5" width="28" height="28"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg><span style="font-size:0.68rem;color:var(--ink-muted)">点击查看 PDF</span></div>`;
                                                 }
                                                 return `<img src="${escapeHtml(url)}" alt="截图 ${idx+1}" onclick="openLightbox('${escapeHtml(url)}')" onerror="this.style.display='none'">`;
                                             }).join('')}
@@ -1570,6 +1570,23 @@
         function openLightbox(url) {
             lightboxImg.src = url;
             lightbox.classList.add('active');
+        }
+
+        // Open PDF in new tab for viewing
+        function openPdf(ticketId, imgIdx) {
+            const data = getCurrentData();
+            const ticket = data.find(t => t.id === ticketId);
+            if (!ticket || !ticket.images || !ticket.images[imgIdx]) return;
+            const pdfData = ticket.images[imgIdx];
+            // Convert base64 data URL to blob and open in new tab
+            const byteString = atob(pdfData.split(',')[1]);
+            const mimeType = 'application/pdf';
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+            const blob = new Blob([ab], { type: mimeType });
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, '_blank');
         }
 
         lightbox.addEventListener('click', () => {
