@@ -1855,7 +1855,11 @@
                 if (!resp.ok) return false;
                 const result = await resp.json();
                 cloudSha = result.sha;
-                const content = JSON.parse(decodeURIComponent(escape(atob(result.content))));
+                const rawBase64 = result.content.replace(/\s/g, '');
+                const binaryStr = atob(rawBase64);
+                const bytes = new Uint8Array(binaryStr.length);
+                for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+                const content = JSON.parse(new TextDecoder('utf-8').decode(bytes));
                 // Only update if cloud has real data
                 if (content && content.tickets && content.transport) {
                     const cloudTickets = content.tickets;
@@ -1907,13 +1911,18 @@
                     cloudSha = getResult.sha;
                 }
 
-                // Push data (strip images to stay under GitHub size limit)
+                // Push data (strip large images to stay under GitHub size limit)
                 const syncData = {
                     tickets: tickets.map(t => ({...t, images: (t.images || []).map(img => img.length > 50000 ? '[IMG_TOO_LARGE]' : img)})),
                     transport: transport.map(t => ({...t, images: (t.images || []).map(img => img.length > 50000 ? '[IMG_TOO_LARGE]' : img)})),
                     lastModified: Date.now()
                 };
-                const content = btoa(unescape(encodeURIComponent(JSON.stringify(syncData, null, 2))));
+                const jsonStr = JSON.stringify(syncData, null, 2);
+                const encoder = new TextEncoder();
+                const utf8Bytes = encoder.encode(jsonStr);
+                let binary = '';
+                utf8Bytes.forEach(b => binary += String.fromCharCode(b));
+                const content = btoa(binary);
 
                 const putResp = await fetch(`https://api.github.com/repos/${SYNC_CONFIG.repo}/contents/${SYNC_CONFIG.file}`, {
                     method: 'PUT',
