@@ -26,7 +26,9 @@
       "date": "2026-09-25",
       "venue": "米兰·米兰大教堂",
       "link": "官网：duomomilano.it\n建议买电梯联票（含教堂+登顶+博物馆）",
-      "images": [],
+      "images": [
+        "[IMG_TOO_LARGE]"
+      ],
       "notes": "🟠 D2。",
       "purchased": false
     },
@@ -263,5 +265,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1787478219599
+  "lastModified": 1787478235108
 }
