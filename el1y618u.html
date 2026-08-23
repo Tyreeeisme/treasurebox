@@ -1855,7 +1855,7 @@
                 if (!resp.ok) return false;
                 const result = await resp.json();
                 cloudSha = result.sha;
-                const content = JSON.parse(atob(result.content));
+                const content = JSON.parse(decodeURIComponent(escape(atob(result.content))));
                 // Only update if cloud has real data
                 if (content && content.tickets && content.transport) {
                     const cloudTickets = content.tickets;
