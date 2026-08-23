@@ -18,7 +18,7 @@
       "link": "官网：pinacotecabrera.org\n建议提前预约选时段",
       "images": [],
       "notes": "🟠 拉斐尔《圣母的婚礼》、曼特尼亚《哀悼基督》。D2 14:00场次。",
-      "purchased": false
+      "purchased": true
     },
     {
       "id": "italy03",
@@ -265,5 +265,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1787502705272
+  "lastModified": 1787505394412
 }
