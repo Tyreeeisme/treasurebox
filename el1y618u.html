@@ -954,8 +954,8 @@
                     <textarea id="inputNotes" placeholder="座位区域、票价、同行人等"></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-ghost" id="cancelBtn">取消</button>
-                    <button type="submit" class="btn btn-primary" id="submitBtn">保存</button>
+                    <button type="button" class="btn btn-ghost" id="cancelBtn">取消（不保存）</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">保存并同步</button>
                 </div>
             </form>
         </div>
@@ -1437,9 +1437,9 @@
                                             <p style="white-space:pre-wrap">${ticket.notes ? escapeHtml(ticket.notes) : '—'}</p>
                                         </div>
                                     </div>
-                                    ${(ticket.images && ticket.images.length > 0) ? `
+                                    ${(ticket.images && ticket.images.filter(u => u && u !== '[IMG_TOO_LARGE]').length > 0) ? `
                                         <div class="detail-images">
-                                            ${(Array.isArray(ticket.images) ? ticket.images : ticket.images.split(',').map(s=>s.trim()).filter(Boolean)).map((url, idx) => {
+                                            ${(Array.isArray(ticket.images) ? ticket.images : ticket.images.split(',').map(s=>s.trim()).filter(Boolean)).filter(u => u && u !== '[IMG_TOO_LARGE]').map((url, idx) => {
                                                 if (url.startsWith('data:application/pdf')) {
                                                     return `<div style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:120px;height:80px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);gap:2px;cursor:pointer;transition:all 0.2s ease;position:relative;" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'" onclick="openPdf('${ticket.id}',${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="#c44536" stroke-width="1.5" width="28" height="28"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6M9 11h6"/></svg><span style="font-size:0.68rem;color:var(--ink-muted)">点击查看 PDF</span></div>`;
                                                 }
@@ -1881,14 +1881,42 @@
                 if (content && content.tickets && content.transport) {
                     const cloudTickets = content.tickets;
                     const cloudTransport = content.transport;
-                    // Merge: cloud wins if it has more recent changes (simple: larger combined length or different data)
+
+                    // Smart merge: use cloud data but preserve local images/PDFs
+                    // (cloud strips large files, so local is the source of truth for images)
+                    function mergeWithLocalImages(cloudArr, localArr) {
+                        const localMap = new Map(localArr.map(t => [t.id, t]));
+                        return cloudArr.map(ct => {
+                            const local = localMap.get(ct.id);
+                            if (local && ct.images) {
+                                // If cloud has placeholder markers, use local images instead
+                                const mergedImages = ct.images.map((img, i) => {
+                                    if (img === '[IMG_TOO_LARGE]' && local.images && local.images[i]) {
+                                        return local.images[i];
+                                    }
+                                    return img;
+                                });
+                                // If local has more images than cloud recorded
+                                if (local.images && local.images.length > ct.images.length) {
+                                    for (let i = ct.images.length; i < local.images.length; i++) {
+                                        mergedImages.push(local.images[i]);
+                                    }
+                                }
+                                return { ...ct, images: mergedImages };
+                            }
+                            return ct;
+                        });
+                    }
+
+                    const mergedTickets = mergeWithLocalImages(cloudTickets, tickets);
+                    const mergedTransport = mergeWithLocalImages(cloudTransport, transport);
+
                     const localStr = JSON.stringify({tickets, transport});
-                    const cloudStr = JSON.stringify({tickets: cloudTickets, transport: cloudTransport});
+                    const cloudStr = JSON.stringify({tickets: mergedTickets, transport: mergedTransport});
                     if (localStr !== cloudStr) {
-                        // If cloud has data and local is just defaults, use cloud
-                        if (cloudTickets.length > 0 || cloudTransport.length > 0) {
-                            tickets = cloudTickets;
-                            transport = cloudTransport;
+                        if (mergedTickets.length > 0 || mergedTransport.length > 0) {
+                            tickets = mergedTickets;
+                            transport = mergedTransport;
                             localStorage.setItem('tickets', JSON.stringify(tickets));
                             localStorage.setItem('transport', JSON.stringify(transport));
                             updateStats();
