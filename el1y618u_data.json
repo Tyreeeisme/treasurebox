@@ -7,7 +7,7 @@
       "venue": "米兰·感恩圣母教堂",
       "link": "官网：cenacolovinciano.vivaticket.it\n每季度放票，秒空，需提前2-3个月抢\n15分钟限时参观\n无票时可购英文导览联票（约€70）",
       "images": [],
-      "notes": "🔴 最难抢！每季度放票秒空，需提前2-3个月抢。15分钟限时参观。无票可购英文导览联票。D2 10:00场次。",
+      "notes": "🔴 最难抢！D2 10:00场次。",
       "purchased": false
     },
     {
@@ -17,7 +17,7 @@
       "venue": "米兰",
       "link": "官网：pinacotecabrera.org\n建议提前预约选时段",
       "images": [],
-      "notes": "🟠 建议早订。拉斐尔《圣母的婚礼》、曼特尼亚《哀悼基督》。D2 14:00场次。",
+      "notes": "🟠 拉斐尔《圣母的婚礼》、曼特尼亚《哀悼基督》。D2 14:00场次。",
       "purchased": false
     },
     {
@@ -26,11 +26,9 @@
       "date": "2026-09-25",
       "venue": "米兰·米兰大教堂",
       "link": "官网：duomomilano.it\n建议买电梯联票（含教堂+登顶+博物馆）",
-      "images": [
-        "[IMG_TOO_LARGE]"
-      ],
-      "notes": "🟠 建议预约电梯联票。D2。",
-      "purchased": true
+      "images": [],
+      "notes": "🟠 D2。",
+      "purchased": false
     },
     {
       "id": "italy04",
@@ -39,7 +37,7 @@
       "venue": "佛罗伦萨",
       "link": "官网：b-ticket.com/b-ticket/uffizi\n官方无差价平台，选时段预约",
       "images": [],
-      "notes": "🟠 建议早订。波提切利《维纳斯的诞生》《春》，达芬奇、米开朗基罗、拉斐尔名作。D3 15:00场次。",
+      "notes": "🟠 波提切利《维纳斯的诞生》《春》，达芬奇、米开朗基罗、拉斐尔名作。D3 15:00场次。",
       "purchased": false
     },
     {
@@ -49,7 +47,7 @@
       "venue": "佛罗伦萨",
       "link": "官网：b-ticket.com/b-ticket/uffizi\n与乌菲兹同一购票平台",
       "images": [],
-      "notes": "🟠 建议早订。米开朗基罗《大卫》雕塑原作。D4 09:00场次。",
+      "notes": "🟠 米开朗基罗《大卫》雕塑原作。D4 09:00场次。",
       "purchased": false
     },
     {
@@ -59,7 +57,7 @@
       "venue": "佛罗伦萨·圣母百花大教堂",
       "link": "官网：tickets.duomo.firenze.it\n含圆顶登顶+乔托钟楼+洗礼堂套票",
       "images": [],
-      "notes": "🟠 建议提前订。含圆顶登顶+乔托钟楼+洗礼堂。D4。",
+      "notes": "🟠 D4。",
       "purchased": false
     },
     {
@@ -69,7 +67,7 @@
       "venue": "那不勒斯",
       "link": "官网：museoarcheologiconapoli.it\n建议线上购票避免排队",
       "images": [],
-      "notes": "🟠 建议线上购票。庞贝/赫库兰尼姆出土马赛克与雕塑，世界顶级。D6。",
+      "notes": "🟠 庞贝/赫库兰尼姆出土马赛克与雕塑，世界顶级。D6。",
       "purchased": false
     },
     {
@@ -79,7 +77,7 @@
       "venue": "庞贝",
       "link": "官网：vivaticket.com\n2026/3起唯一官方渠道\n线上购票扫码入园",
       "images": [],
-      "notes": "🟠 线上购票扫码入园。2026/3起唯一官方渠道 vivaticket。悲剧诗人之家、秘仪庄园。D8。",
+      "notes": "🟠 悲剧诗人之家、秘仪庄园。D8。",
       "purchased": false
     },
     {
@@ -89,7 +87,7 @@
       "venue": "巴勒莫",
       "link": "官网：federicosecondo.org\n建议官网预约",
       "images": [],
-      "notes": "🟠 建议官网预约。拜占庭金色马赛克巅峰之作。D9。",
+      "notes": "🟠 拜占庭金色马赛克巅峰之作。D9。",
       "purchased": false
     },
     {
@@ -99,7 +97,7 @@
       "venue": "陶尔米纳",
       "link": "官网：parchiarcheologici.regione.sicilia.it\n可现场购票，旺季建议线上",
       "images": [],
-      "notes": "🟢 可现场购票，旺季建议线上。以伊奥尼亚海为背景，远眺埃特纳火山。D11。",
+      "notes": "🟢 以伊奥尼亚海为背景，远眺埃特纳火山。D11。",
       "purchased": false
     },
     {
@@ -109,7 +107,7 @@
       "venue": "罗马",
       "link": "官网：ticketing.colosseo.it\n含斗兽场+古罗马广场+帕拉蒂尼山\n需护照原件入场",
       "images": [],
-      "notes": "🔴 强制预约！含斗兽场+古罗马广场+帕拉蒂尼山，需护照原件入场。D14。",
+      "notes": "🔴 强制预约！D14。",
       "purchased": false
     },
     {
@@ -119,7 +117,7 @@
       "venue": "罗马",
       "link": "官网：museiitaliani.it\n建议提前预约",
       "images": [],
-      "notes": "🟠 建议提前订。D14下午。",
+      "notes": "🟠 D14下午。",
       "purchased": false
     },
     {
@@ -129,7 +127,7 @@
       "venue": "梵蒂冈",
       "link": "官网：tickets.museivaticani.va\n提前60天放票\n含西斯廷礼拜堂+拉斐尔画室",
       "images": [],
-      "notes": "🔴 强制预约！提前60天放票。西斯廷礼拜堂（米开朗基罗《创世纪》《末日审判》）、拉斐尔画室。D15。",
+      "notes": "🔴 强制预约！米开朗基罗《创世纪》《末日审判》。D15。",
       "purchased": false
     },
     {
@@ -139,7 +137,7 @@
       "venue": "罗马",
       "link": "官网：tosc.it/galleria-borghese\n提前30-45天预约\n限时2小时参观",
       "images": [],
-      "notes": "🔴 最难抢！提前30-45天，限时2小时。贝尼尼《阿波罗与达芙妮》《劫夺普洛塞庇娜》、卡拉瓦乔。D15 09:00场次。",
+      "notes": "🔴 最难抢！贝尼尼《阿波罗与达芙妮》《劫夺普洛塞庇娜》、卡拉瓦乔。D15 09:00场次。",
       "purchased": false
     }
   ],
@@ -265,5 +263,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1787477998002
+  "lastModified": 1787478219599
 }
