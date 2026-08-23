@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谭总的票务系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --surface: #faf9f7;
+            --surface-raised: #ffffff;
+            --ink: #1a1a18;
+            --ink-muted: #6b6961;
+            --ink-faint: #a8a49b;
+            --accent: #2d6a4f;
+            --accent-light: #d8f3dc;
+            --accent-glow: #40916c;
+            --warning: #c44536;
+            --warning-light: #fde8e5;
+            --warning-muted: #e76f51;
+            --border: #e8e5df;
+            --border-strong: #d4d0c8;
+            --shadow-sm: 0 1px 3px rgba(26,26,24,0.04), 0 1px 2px rgba(26,26,24,0.06);
+            --shadow-md: 0 4px 12px rgba(26,26,24,0.06), 0 2px 6px rgba(26,26,24,0.04);
+            --shadow-lg: 0 12px 40px rgba(26,26,24,0.08), 0 4px 12px rgba(26,26,24,0.04);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --transport: #1d4ed8;
+            --transport-light: #dbeafe;
+            --transport-glow: #2563eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--surface);
+            color: var(--ink);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: clamp(24px, 6vw, 64px) clamp(16px, 4vw, 32px);
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--ink-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--ink-faint);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat--purchased .stat-number {
+            color: var(--accent);
+        }
+
+        .stat--pending .stat-number {
+            color: var(--warning);
+        }
+
+        /* Top-level Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .category-tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--ink-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            position: relative;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .category-tab.active {
+            color: var(--ink);
+            border-bottom-color: var(--accent);
+        }
+
+        .category-tab.active[data-category="transport"] {
+            border-bottom-color: var(--transport);
+        }
+
+        .category-tab:hover:not(.active) {
+            color: var(--ink);
+            background: var(--accent-light);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+        }
+
+        .category-tab .tab-icon {
+            margin-right: 6px;
+        }
+
+        .category-tab .tab-count {
+            display: inline-block;
+            background: var(--border);
+            color: var(--ink-muted);
+            font-size: 0.72rem;
+            padding: 2px 7px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: 600;
+        }
+
+        .category-tab.active .tab-count {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .category-tab.active[data-category="transport"] .tab-count {
+            background: var(--transport-light);
+            color: var(--transport);
+        }
+
+        /* Filter Tabs */
+        .filters {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 32px;
+            background: var(--border);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            width: fit-content;
+        }
+
+        .filter-btn {
+            padding: 8px 18px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--ink-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .filter-btn.active {
+            background: var(--surface-raised);
+            color: var(--ink);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-btn:hover:not(.active) {
+            color: var(--ink);
+        }
+
+        /* Add Button */
+        .add-trigger {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 18px 22px;
+            border: 2px dashed var(--border-strong);
+            border-radius: var(--radius-md);
+            background: transparent;
+            color: var(--ink-muted);
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 24px;
+        }
+
+        .add-trigger:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .add-trigger svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Form */
+        .form-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26,26,24,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .form-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-panel {
+            background: var(--surface-raised);
+            border-radius: var(--radius-lg);
+            padding: clamp(24px, 5vw, 40px);
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        .form-panel h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--ink-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--ink);
+            background: var(--surface);
+            transition: border-color 0.2s ease;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-glow);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(45,106,79,0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--ink-muted);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--ink-muted);
+            color: var(--ink);
+        }
+
+        /* Ticket Cards */
+        .tickets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ticket-card {
+            background: var(--surface-raised);
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+            transition: all 0.25s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ticket-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-strong);
+        }
+
+        .ticket-card.purchased {
+            border-left: 4px solid var(--accent);
+        }
+
+        .ticket-card.pending {
+            border-left: 4px solid var(--warning);
+        }
+
+        .ticket-main {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 20px;
+            cursor: pointer;
+        }
+
+        .ticket-check {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .ticket-check:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .ticket-card.purchased .ticket-check {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .ticket-check svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0;
+            color: white;
+            transition: opacity 0.2s ease;
+        }
+
+        .ticket-card.purchased .ticket-check svg {
+            opacity: 1;
+        }
+
+        .ticket-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ticket-name {
+            font-weight: 500;
+            font-size: 1rem;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ticket-card.purchased .ticket-name {
+            color: var(--accent);
+        }
+
+        .ticket-meta {
+            display: flex;
+            gap: 14px;
+            font-size: 0.8rem;
+            color: var(--ink-faint);
+        }
+
+        .ticket-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ticket-status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            flex-shrink: 0;
+        }
+
+        .ticket-card.purchased .ticket-status-badge {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .ticket-card.pending .ticket-status-badge {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .ticket-expand {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-faint);
+            cursor: pointer;
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .ticket-card.expanded .ticket-expand {
+            transform: rotate(180deg);
+        }
+
+        .ticket-expand svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Detail Panel */
+        .ticket-detail {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s ease;
+        }
+
+        .ticket-card.expanded .ticket-detail {
+            grid-template-rows: 1fr;
+        }
+
+        .ticket-detail-inner {
+            overflow: hidden;
+        }
+
+        .ticket-detail-content {
+            padding: 0 20px 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 0;
+            padding-top: 16px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .detail-item label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--ink-faint);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .detail-item p {
+            font-size: 0.9rem;
+            color: var(--ink);
+            word-break: break-all;
+        }
+
+        .detail-item a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .detail-item a:hover {
+            text-decoration: underline;
+        }
+
+        .detail-images {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .detail-images img {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .detail-images img:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .ticket-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .btn-delete:hover {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-edit {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .btn-edit:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Image Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(26,26,24,0.9);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--ink-faint);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* Animation for new cards */
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ticket-card {
+            animation: cardEnter 0.3s ease;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-strong);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--surface);
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--ink-faint);
+            font-size: 0.85rem;
+        }
+
+        .upload-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .upload-preview:empty {
+            margin-top: 0;
+        }
+
+        .upload-preview-item {
+            position: relative;
+            width: 72px;
+            height: 72px;
+        }
+
+        .upload-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .upload-preview-item .remove-img {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--warning);
+            color: white;
+            border: none;
+            font-size: 11px;
+            line-height: 18px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Sync Bar */
+        .sync-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .sync-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--surface-raised);
+            color: var(--ink-muted);
+            font-size: 0.8rem;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sync-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        /* Share Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--ink);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 90vw;
+            text-align: center;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <h1>谭总的票务系统</h1>
+            <p id="headerDesc">追踪你的所有演出、展览与活动门票</p>
+            <div class="stats">
+                <div class="stat stat--purchased">
+                    <span class="stat-number" id="statPurchased">0</span>
+                    <span class="stat-label">已购</span>
+                </div>
+                <div class="stat stat--pending">
+                    <span class="stat-number" id="statPending">0</span>
+                    <span class="stat-label">待购</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Top-level Category Switcher -->
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="ticket">
+                <span class="tab-icon">🎫</span>门票<span class="tab-count" id="ticketCount">0</span>
+            </button>
+            <button class="category-tab" data-category="transport">
+                <span class="tab-icon">🚄</span>交通票<span class="tab-count" id="transportCount">0</span>
+            </button>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="pending">待购</button>
+            <button class="filter-btn" data-filter="purchased">已购</button>
+        </div>
+
+        <button class="add-trigger" id="addTrigger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span id="addTriggerText">添加新门票</span>
+        </button>
+
+        <div class="sync-bar">
+            <button class="sync-btn" id="shareBtn" title="生成分享链接，其他设备打开即可查看">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/>
+                </svg>
+                生成分享链接
+            </button>
+            <button class="sync-btn" id="exportBtn" title="导出 JSON 文件（含图片）">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                导出
+            </button>
+            <label class="sync-btn" id="importBtn" title="导入 JSON 文件">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                </svg>
+                导入
+                <input type="file" id="importFile" accept=".json" style="display:none">
+            </label>
+        </div>
+
+        <div class="tickets-list" id="ticketsList"></div>
+    </div>
+
+    <!-- Add/Edit Form -->
+    <div class="form-overlay" id="formOverlay">
+        <div class="form-panel">
+            <h2 id="formTitle">添加门票</h2>
+            <form id="ticketForm">
+                <input type="hidden" id="editId">
+                <div class="form-group">
+                    <label>名称 *</label>
+                    <input type="text" id="inputName" placeholder="例：周杰伦演唱会" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>日期</label>
+                        <input type="date" id="inputDate">
+                    </div>
+                    <div class="form-group">
+                        <label id="labelVenue">地点</label>
+                        <input type="text" id="inputVenue" placeholder="例：国家体育场">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="labelLink">购票信息</label>
+                    <textarea id="inputLink" placeholder="订单号、确认码、座位区域、票价、购票渠道等"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>上传截图/图片（可多选）</label>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="inputImages" accept="image/*" multiple style="display:none">
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+                                <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+                            </svg>
+                            <span>点击或拖拽图片到此处</span>
+                        </div>
+                        <div class="upload-preview" id="uploadPreview"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <textarea id="inputNotes" placeholder="座位区域、票价、同行人等"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-ghost" id="cancelBtn">取消</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <img id="lightboxImg" src="" alt="">
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== DATA CONSTANTS =====
+        const ITALY_TICKETS = [
+            {
+                id: 'italy01',
+                name: '米兰《最后的晚餐》Cenacolo Vinciano',
+                date: '2026-09-25',
+                venue: '米兰·感恩圣母教堂',
+                link: '官网：cenacolovinciano.vivaticket.it\n每季度放票，秒空，需提前2-3个月抢\n15分钟限时参观\n无票时可购英文导览联票（约€70）',
+                images: [],
+                notes: '🔴 最难抢！D2 10:00场次。',
+                purchased: false
+            },
+            {
+                id: 'italy02',
+                name: '布雷拉美术馆 Pinacoteca di Brera',
+                date: '2026-09-25',
+                venue: '米兰',
+                link: '官网：pinacotecabrera.org\n建议提前预约选时段',
+                images: [],
+                notes: '🟠 拉斐尔《圣母的婚礼》、曼特尼亚《哀悼基督》。D2 14:00场次。',
+                purchased: false
+            },
+            {
+                id: 'italy03',
+                name: '米兰大教堂登顶 Duomo（电梯联票）',
+                date: '2026-09-25',
+                venue: '米兰·米兰大教堂',
+                link: '官网：duomomilano.it\n建议买电梯联票（含教堂+登顶+博物馆）',
+                images: [],
+                notes: '🟠 D2。',
+                purchased: false
+            },
+            {
+                id: 'italy04',
+                name: '乌菲兹美术馆 Uffizi Gallery',
+                date: '2026-09-26',
+                venue: '佛罗伦萨',
+                link: '官网：b-ticket.com/b-ticket/uffizi\n官方无差价平台，选时段预约',
+                images: [],
+                notes: '🟠 波提切利《维纳斯的诞生》《春》，达芬奇、米开朗基罗、拉斐尔名作。D3 15:00场次。',
+                purchased: false
+            },
+            {
+                id: 'italy05',
+                name: '学院美术馆 Accademia Gallery（大卫像）',
+                date: '2026-09-27',
+                venue: '佛罗伦萨',
+                link: '官网：b-ticket.com/b-ticket/uffizi\n与乌菲兹同一购票平台',
+                images: [],
+                notes: '🟠 米开朗基罗《大卫》雕塑原作。D4 09:00场次。',
+                purchased: false
+            },
+            {
+                id: 'italy06',
+                name: '圣母百花大教堂·圆顶登顶 Brunelleschi Pass',
+                date: '2026-09-27',
+                venue: '佛罗伦萨·圣母百花大教堂',
+                link: '官网：tickets.duomo.firenze.it\n含圆顶登顶+乔托钟楼+洗礼堂套票',
+                images: [],
+                notes: '🟠 D4。',
+                purchased: false
+            },
+            {
+                id: 'italy07',
+                name: '那不勒斯国家考古博物馆 MANN',
+                date: '2026-09-29',
+                venue: '那不勒斯',
+                link: '官网：museoarcheologiconapoli.it\n建议线上购票避免排队',
+                images: [],
+                notes: '🟠 庞贝/赫库兰尼姆出土马赛克与雕塑，世界顶级。D6。',
+                purchased: false
+            },
+            {
+                id: 'italy08',
+                name: '庞贝古城 Pompei Scavi',
+                date: '2026-10-01',
+                venue: '庞贝',
+                link: '官网：vivaticket.com\n2026/3起唯一官方渠道\n线上购票扫码入园',
+                images: [],
+                notes: '🟠 悲剧诗人之家、秘仪庄园。D8。',
+                purchased: false
+            },
+            {
+                id: 'italy09',
+                name: '诺曼宫 & 帕拉提纳礼拜堂',
+                date: '2026-10-02',
+                venue: '巴勒莫',
+                link: '官网：federicosecondo.org\n建议官网预约',
+                images: [],
+                notes: '🟠 拜占庭金色马赛克巅峰之作。D9。',
+                purchased: false
+            },
+            {
+                id: 'italy10',
+                name: '陶尔米纳古希腊剧场 Teatro Antico',
+                date: '2026-10-04',
+                venue: '陶尔米纳',
+                link: '官网：parchiarcheologici.regione.sicilia.it\n可现场购票，旺季建议线上',
+                images: [],
+                notes: '🟢 以伊奥尼亚海为背景，远眺埃特纳火山。D11。',
+                purchased: false
+            },
+            {
+                id: 'italy11',
+                name: '古罗马斗兽场套票 Colosseo',
+                date: '2026-10-07',
+                venue: '罗马',
+                link: '官网：ticketing.colosseo.it\n含斗兽场+古罗马广场+帕拉蒂尼山\n需护照原件入场',
+                images: [],
+                notes: '🔴 强制预约！D14。',
+                purchased: false
+            },
+            {
+                id: 'italy12',
+                name: '万神殿 Pantheon',
+                date: '2026-10-07',
+                venue: '罗马',
+                link: '官网：museiitaliani.it\n建议提前预约',
+                images: [],
+                notes: '🟠 D14下午。',
+                purchased: false
+            },
+            {
+                id: 'italy13',
+                name: '梵蒂冈博物馆（含西斯廷礼拜堂）',
+                date: '2026-10-08',
+                venue: '梵蒂冈',
+                link: '官网：tickets.museivaticani.va\n提前60天放票\n含西斯廷礼拜堂+拉斐尔画室',
+                images: [],
+                notes: '🔴 强制预约！米开朗基罗《创世纪》《末日审判》。D15。',
+                purchased: false
+            },
+            {
+                id: 'italy14',
+                name: '博尔盖塞美术馆 Galleria Borghese',
+                date: '2026-10-08',
+                venue: '罗马',
+                link: '官网：tosc.it/galleria-borghese\n提前30-45天预约\n限时2小时参观',
+                images: [],
+                notes: '🔴 最难抢！贝尼尼《阿波罗与达芙妮》《劫夺普洛塞庇娜》、卡拉瓦乔。D15 09:00场次。',
+                purchased: false
+            }
+        ];
+
+        const ITALY_TRANSPORT = [
+            {
+                id: 'trans01',
+                name: 'Malpensa Express 机场快线',
+                date: '2026-09-24',
+                venue: 'Malpensa机场 → 米兰中央车站',
+                link: '官网：malpensaexpress.it\n车程约50分钟\n可现场自助机购买或官网预购',
+                images: [],
+                notes: 'D1 抵达后乘坐。建议买往返票更划算。',
+                purchased: false
+            },
+            {
+                id: 'trans02',
+                name: '米兰→佛罗伦萨 高速铁路',
+                date: '2026-09-26',
+                venue: 'Milano Centrale → Firenze S.M.N.',
+                link: '购票渠道：trenitalia.com 或 italotreno.com\n车程约1小时55分\n提前购票有Super Economy票价\nTrenitalia Frecciarossa 或 Italo',
+                images: [],
+                notes: 'D3 上午出发。建议提前1-2个月买早鸟票，价格€19.9起。',
+                purchased: false
+            },
+            {
+                id: 'trans03',
+                name: '佛罗伦萨→那不勒斯 高速铁路',
+                date: '2026-09-29',
+                venue: 'Firenze S.M.N. → Napoli Centrale',
+                link: '购票渠道：trenitalia.com 或 italotreno.com\n车程约2小时40分\nFrecciarossa/Italo均可',
+                images: [],
+                notes: 'D6 上午出发。同样建议提前买早鸟价。',
+                purchased: false
+            },
+            {
+                id: 'trans04',
+                name: '那不勒斯↔卡普里岛 水翼船',
+                date: '2026-09-30',
+                venue: 'Napoli Molo Beverello ↔ Capri Marina Grande',
+                link: '购票渠道：capritourism.com 或 ferryhopper.com\n船程约50分钟\n水翼船(Aliscafo)比慢船快\n旺季建议提前1天购买',
+                images: [],
+                notes: 'D7 往返。注意看天气，风浪大可能停航。回程建议预留余量。',
+                purchased: false
+            },
+            {
+                id: 'trans05',
+                name: '那不勒斯→庞贝 Circumvesuviana',
+                date: '2026-10-01',
+                venue: 'Napoli Garibaldi → Pompei Scavi',
+                link: '运营方：eavsrl.it\n车程约35分钟\nCircumvesuviana环维苏威铁路\n现场购票即可，班次频繁',
+                images: [],
+                notes: 'D8 上午。注意保管财物，车上较拥挤。在Pompei Scavi-Villa dei Misteri站下。',
+                purchased: false
+            },
+            {
+                id: 'trans06',
+                name: '那不勒斯→巴勒莫 航班',
+                date: '2026-10-01',
+                venue: 'NAP 那不勒斯机场 → PMO 巴勒莫机场',
+                link: '航空公司：ITA Airways 或 Ryanair\n飞行时间约1小时\n建议提前在官网购票\nRyanair价格更低但行李另付',
+                images: [],
+                notes: 'D8 下午/傍晚航班。庞贝游览后前往机场。提前2小时到机场。',
+                purchased: false
+            },
+            {
+                id: 'trans07',
+                name: '巴勒莫↔切法卢 区间火车',
+                date: '2026-10-03',
+                venue: 'Palermo Centrale ↔ Cefalù',
+                link: '购票渠道：trenitalia.com\n车程约50分钟\n区间车(Regionale)班次较多\n可现场购票',
+                images: [],
+                notes: 'D10 当日往返。切法卢海滩小镇，半日游足够。',
+                purchased: false
+            },
+            {
+                id: 'trans08',
+                name: '巴勒莫→陶尔米纳 城际大巴',
+                date: '2026-10-04',
+                venue: 'Palermo → Taormina',
+                link: '运营方：interbus.it 或 saisautolinee.it\n车程约3.5-5小时\n也可选择火车(需在Messina转车，约3-4h)\n大巴直达更方便',
+                images: [],
+                notes: 'D11 上午出发。建议选择大巴直达，省去转车麻烦。提前在线购票。',
+                purchased: false
+            },
+            {
+                id: 'trans09',
+                name: '陶尔米纳↔锡拉库萨 火车/大巴',
+                date: '2026-10-05',
+                venue: 'Taormina-Giardini ↔ Siracusa',
+                link: '火车：trenitalia.com（约1.5-2小时）\n大巴：interbus.it（约1.5-2小时）\n火车从Taormina-Giardini站出发\n大巴可能更方便到达市中心',
+                images: [],
+                notes: 'D12 当日往返。锡拉库萨古城(Ortigia岛)。注意末班车时间。',
+                purchased: false
+            },
+            {
+                id: 'trans10',
+                name: '陶尔米纳→卡塔尼亚机场 大巴',
+                date: '2026-10-06',
+                venue: 'Taormina → CTA 卡塔尼亚机场',
+                link: '运营方：interbus.it\n车程约1小时\n班次较多，提前查看时刻表\nEtna Trasporti也有线路',
+                images: [],
+                notes: 'D13 根据航班时间选择班次。建议提前2.5小时到达机场。',
+                purchased: false
+            },
+            {
+                id: 'trans11',
+                name: '卡塔尼亚→罗马 航班',
+                date: '2026-10-06',
+                venue: 'CTA 卡塔尼亚机场 → FCO 罗马菲乌米奇诺机场',
+                link: '航空公司：ITA Airways 或 Ryanair\n飞行时间约1小时10分\n建议提前官网购票',
+                images: [],
+                notes: 'D13 飞罗马。抵达后乘Leonardo Express进城。',
+                purchased: false
+            },
+            {
+                id: 'trans12',
+                name: 'Leonardo Express 机场快线',
+                date: '2026-10-06',
+                venue: 'Roma FCO 机场 → Roma Termini',
+                link: '购票渠道：trenitalia.com\n车程约32分钟\n直达无站停\n也可现场自助机购买',
+                images: [],
+                notes: 'D13 抵达罗马后乘坐。单程约€14，每15-30分钟一班。',
+                purchased: false
+            }
+        ];
+
+        // ===== STATE =====
+        let currentCategory = 'ticket'; // 'ticket' or 'transport'
+        let currentFilter = 'all';
+
+        // Initialize both data sets
+        function initData(key, defaults) {
+            const stored = JSON.parse(localStorage.getItem(key) || '[]');
+            stored.forEach(t => {
+                if (typeof t.images === 'string') {
+                    t.images = t.images ? t.images.split(',').map(s => s.trim()).filter(Boolean) : [];
+                }
+            });
+            const existingIds = new Set(stored.map(t => t.id));
+            let needsUpdate = false;
+            defaults.forEach(t => {
+                if (!existingIds.has(t.id)) {
+                    stored.push(t);
+                    needsUpdate = true;
+                } else {
+                    const existing = stored.find(s => s.id === t.id);
+                    if (existing && existing.link && existing.link.startsWith('http')) {
+                        existing.link = t.link;
+                        needsUpdate = true;
+                    }
+                }
+            });
+            if (needsUpdate || stored.length === 0) {
+                localStorage.setItem(key, JSON.stringify(stored.length > 0 ? stored : defaults));
+            } else {
+                localStorage.setItem(key, JSON.stringify(stored));
+            }
+        }
+
+        initData('tickets', ITALY_TICKETS);
+        initData('transport', ITALY_TRANSPORT);
+
+        let tickets = JSON.parse(localStorage.getItem('tickets') || JSON.stringify(ITALY_TICKETS));
+        let transport = JSON.parse(localStorage.getItem('transport') || JSON.stringify(ITALY_TRANSPORT));
+
+        if (tickets.length === 0) { tickets = [...ITALY_TICKETS]; localStorage.setItem('tickets', JSON.stringify(tickets)); }
+        if (transport.length === 0) { transport = [...ITALY_TRANSPORT]; localStorage.setItem('transport', JSON.stringify(transport)); }
+
+        // Get current data array based on active category
+        function getCurrentData() {
+            return currentCategory === 'ticket' ? tickets : transport;
+        }
+
+        function setCurrentData(data) {
+            if (currentCategory === 'ticket') {
+                tickets = data;
+            } else {
+                transport = data;
+            }
+        }
+
+        function getStorageKey() {
+            return currentCategory === 'ticket' ? 'tickets' : 'transport';
+        }
+
+        // ===== ELEMENTS =====
+        const ticketsList = document.getElementById('ticketsList');
+        const formOverlay = document.getElementById('formOverlay');
+        const ticketForm = document.getElementById('ticketForm');
+        const addTrigger = document.getElementById('addTrigger');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const formTitle = document.getElementById('formTitle');
+        const editId = document.getElementById('editId');
+
+        // ===== SAVE & STATS =====
+        function save() {
+            localStorage.setItem(getStorageKey(), JSON.stringify(getCurrentData()));
+            updateStats();
+            updateTabCounts();
+        }
+
+        function updateStats() {
+            const data = getCurrentData();
+            const purchased = data.filter(t => t.purchased).length;
+            const pending = data.length - purchased;
+            document.getElementById('statPurchased').textContent = purchased;
+            document.getElementById('statPending').textContent = pending;
+        }
+
+        function updateTabCounts() {
+            document.getElementById('ticketCount').textContent = tickets.length;
+            document.getElementById('transportCount').textContent = transport.length;
+        }
+
+        // ===== UTILS =====
+        function uid() {
+            return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+
+        // ===== CATEGORY TABS =====
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelector('.category-tab.active').classList.remove('active');
+                tab.classList.add('active');
+                currentCategory = tab.dataset.category;
+                updateCategoryUI();
+                updateStats();
+                render();
+            });
+        });
+
+        function updateCategoryUI() {
+            const isTransport = currentCategory === 'transport';
+            const desc = document.getElementById('headerDesc');
+            const addText = document.getElementById('addTriggerText');
+
+            desc.textContent = isTransport
+                ? '追踪你的所有火车票、机票、船票与大巴票'
+                : '追踪你的所有演出、展览与活动门票';
+            addText.textContent = isTransport ? '添加新交通票' : '添加新门票';
+        }
+
+        // ===== RENDER =====
+        function render() {
+            const data = getCurrentData();
+            const filtered = data.filter(t => {
+                if (currentFilter === 'purchased') return t.purchased;
+                if (currentFilter === 'pending') return !t.purchased;
+                return true;
+            });
+
+            const typeLabel = currentCategory === 'ticket' ? '门票' : '交通票';
+
+            if (filtered.length === 0) {
+                ticketsList.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+                        </svg>
+                        <p>${currentFilter === 'all' ? '还没有添加任何' + typeLabel : currentFilter === 'purchased' ? '还没有已购' + typeLabel : '所有' + typeLabel + '都已购买！'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            ticketsList.innerHTML = filtered.map(ticket => {
+                const statusClass = ticket.purchased ? 'purchased' : 'pending';
+                const statusText = ticket.purchased ? '已购' : '待购';
+
+                return `
+                    <div class="ticket-card ${statusClass}" data-id="${ticket.id}">
+                        <div class="ticket-main">
+                            <div class="ticket-check" onclick="togglePurchased(event, '${ticket.id}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            <div class="ticket-info" onclick="toggleExpand('${ticket.id}')">
+                                <div class="ticket-name">${escapeHtml(ticket.name)}</div>
+                                <div class="ticket-meta">
+                                    ${ticket.date ? `<span>📅 ${formatDate(ticket.date)}</span>` : ''}
+                                    ${ticket.venue ? `<span>📍 ${escapeHtml(ticket.venue)}</span>` : ''}
+                                </div>
+                            </div>
+                            <span class="ticket-status-badge">${statusText}</span>
+                            <div class="ticket-expand" onclick="toggleExpand('${ticket.id}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ticket-detail">
+                            <div class="ticket-detail-inner">
+                                <div class="ticket-detail-content">
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <label>日期</label>
+                                            <p>${formatDate(ticket.date)}</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label>${currentCategory === 'transport' ? '路线' : '地点'}</label>
+                                            <p>${ticket.venue ? escapeHtml(ticket.venue) : '—'}</p>
+                                        </div>
+                                        <div class="detail-item" style="grid-column: 1 / -1">
+                                            <label>购票信息</label>
+                                            <p style="white-space:pre-wrap;word-break:break-word">${ticket.link ? escapeHtml(ticket.link) : '—'}</p>
+                                        </div>
+                                        <div class="detail-item" style="grid-column: 1 / -1">
+                                            <label>备注</label>
+                                            <p style="white-space:pre-wrap">${ticket.notes ? escapeHtml(ticket.notes) : '—'}</p>
+                                        </div>
+                                    </div>
+                                    ${(ticket.images && ticket.images.length > 0) ? `
+                                        <div class="detail-images">
+                                            ${(Array.isArray(ticket.images) ? ticket.images : ticket.images.split(',').map(s=>s.trim()).filter(Boolean)).map((url, idx) => `<img src="${escapeHtml(url)}" alt="截图 ${idx+1}" onclick="openLightbox('${escapeHtml(url)}')" onerror="this.style.display='none'">`).join('')}
+                                        </div>
+                                    ` : ''}
+                                    <div class="ticket-actions">
+                                        <button class="btn-sm btn-edit" onclick="editTicket('${ticket.id}')">编辑</button>
+                                        <button class="btn-sm btn-delete" onclick="deleteTicket('${ticket.id}')">删除</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== ACTIONS =====
+        function togglePurchased(event, id) {
+            event.stopPropagation();
+            const data = getCurrentData();
+            const ticket = data.find(t => t.id === id);
+            if (ticket) {
+                ticket.purchased = !ticket.purchased;
+                save();
+                render();
+            }
+        }
+
+        function toggleExpand(id) {
+            const card = document.querySelector(`.ticket-card[data-id="${id}"]`);
+            if (card) card.classList.toggle('expanded');
+        }
+
+        function deleteTicket(id) {
+            const typeLabel = currentCategory === 'ticket' ? '门票' : '交通票';
+            if (confirm(`确定删除这张${typeLabel}吗？`)) {
+                setCurrentData(getCurrentData().filter(t => t.id !== id));
+                save();
+                render();
+            }
+        }
+
+        function editTicket(id) {
+            const data = getCurrentData();
+            const ticket = data.find(t => t.id === id);
+            if (!ticket) return;
+            const typeLabel = currentCategory === 'ticket' ? '门票' : '交通票';
+            formTitle.textContent = '编辑' + typeLabel;
+            editId.value = id;
+            document.getElementById('inputName').value = ticket.name;
+            document.getElementById('inputDate').value = ticket.date || '';
+            document.getElementById('inputVenue').value = ticket.venue || '';
+            document.getElementById('inputLink').value = ticket.link || '';
+            document.getElementById('inputNotes').value = ticket.notes || '';
+            pendingImages = Array.isArray(ticket.images) ? [...ticket.images] : [];
+            renderUploadPreview();
+            formOverlay.classList.add('active');
+        }
+
+        // Open form
+        addTrigger.addEventListener('click', () => {
+            const typeLabel = currentCategory === 'ticket' ? '门票' : '交通票';
+            formTitle.textContent = '添加' + typeLabel;
+            editId.value = '';
+            ticketForm.reset();
+            pendingImages = [];
+            renderUploadPreview();
+            // Update form labels based on category
+            document.getElementById('labelVenue').textContent = currentCategory === 'transport' ? '路线' : '地点';
+            document.getElementById('inputVenue').placeholder = currentCategory === 'transport' ? '例：Milano → Firenze' : '例：国家体育场';
+            formOverlay.classList.add('active');
+        });
+
+        // Close form
+        cancelBtn.addEventListener('click', () => {
+            formOverlay.classList.remove('active');
+        });
+
+        formOverlay.addEventListener('click', (e) => {
+            if (e.target === formOverlay) formOverlay.classList.remove('active');
+        });
+
+        // Submit form
+        ticketForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('inputName').value.trim(),
+                date: document.getElementById('inputDate').value,
+                venue: document.getElementById('inputVenue').value.trim(),
+                link: document.getElementById('inputLink').value.trim(),
+                images: [...pendingImages],
+                notes: document.getElementById('inputNotes').value.trim(),
+            };
+
+            if (!data.name) return;
+
+            const currentData = getCurrentData();
+            if (editId.value) {
+                const ticket = currentData.find(t => t.id === editId.value);
+                if (ticket) Object.assign(ticket, data);
+            } else {
+                currentData.unshift({ id: uid(), purchased: false, ...data });
+            }
+            setCurrentData(currentData);
+
+            save();
+            render();
+            formOverlay.classList.remove('active');
+            ticketForm.reset();
+            pendingImages = [];
+            renderUploadPreview();
+        });
+
+        // Filters
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.filter-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                render();
+            });
+        });
+
+        // Lightbox
+        function openLightbox(url) {
+            lightboxImg.src = url;
+            lightbox.classList.add('active');
+        }
+
+        lightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+            lightboxImg.src = '';
+        });
+
+        // ===== IMAGE UPLOAD =====
+        let pendingImages = [];
+        const uploadArea = document.getElementById('uploadArea');
+        const uploadInput = document.getElementById('inputImages');
+        const uploadPreview = document.getElementById('uploadPreview');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+        function renderUploadPreview() {
+            uploadPreview.innerHTML = pendingImages.map((src, idx) => `
+                <div class="upload-preview-item">
+                    <img src="${src}" alt="预览${idx+1}">
+                    <button class="remove-img" onclick="removeUploadImage(event, ${idx})">×</button>
+                </div>
+            `).join('');
+            uploadPlaceholder.style.display = pendingImages.length > 0 ? 'none' : 'flex';
+        }
+
+        function removeUploadImage(e, idx) {
+            e.stopPropagation();
+            e.preventDefault();
+            pendingImages.splice(idx, 1);
+            renderUploadPreview();
+        }
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+                if (pendingImages.length >= 5) { alert('最多上传 5 张图片'); return; }
+                if (file.size > 2 * 1024 * 1024) { alert(`${file.name} 超过 2MB，请压缩后重试`); return; }
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    pendingImages.push(ev.target.result);
+                    renderUploadPreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        uploadArea.addEventListener('click', () => uploadInput.click());
+        uploadInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        // Drag & Drop
+        uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                formOverlay.classList.remove('active');
+                lightbox.classList.remove('active');
+            }
+        });
+
+        // ===== TOAST =====
+        function showToast(msg, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        // ===== SHARE / SYNC =====
+        async function compressData(data) {
+            const json = JSON.stringify(data);
+            const blob = new Blob([json]);
+            const cs = new CompressionStream('deflate');
+            const compressedStream = blob.stream().pipeThrough(cs);
+            const compressedBlob = await new Response(compressedStream).blob();
+            const buffer = await compressedBlob.arrayBuffer();
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            bytes.forEach(b => binary += String.fromCharCode(b));
+            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        async function decompressData(encoded) {
+            const binary = atob(encoded.replace(/-/g, '+').replace(/_/g, '/'));
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            const blob = new Blob([bytes]);
+            const ds = new DecompressionStream('deflate');
+            const decompressedStream = blob.stream().pipeThrough(ds);
+            const text = await new Response(decompressedStream).text();
+            return JSON.parse(text);
+        }
+
+        // Check URL for shared data on load
+        async function loadFromURL() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#data=')) {
+                try {
+                    const encoded = hash.slice(6);
+                    const data = await decompressData(encoded);
+                    if (data && typeof data === 'object') {
+                        // New format: { tickets: [...], transport: [...] }
+                        if (data.tickets && data.transport) {
+                            tickets = data.tickets;
+                            transport = data.transport;
+                            localStorage.setItem('tickets', JSON.stringify(tickets));
+                            localStorage.setItem('transport', JSON.stringify(transport));
+                            render();
+                            updateStats();
+                            updateTabCounts();
+                            showToast(`已从分享链接加载 ${tickets.length} 张门票 + ${transport.length} 张交通票`);
+                        } else if (Array.isArray(data) && data.length > 0) {
+                            // Legacy format: just tickets array
+                            tickets = data;
+                            localStorage.setItem('tickets', JSON.stringify(tickets));
+                            render();
+                            updateStats();
+                            updateTabCounts();
+                            showToast(`已从分享链接加载 ${data.length} 张门票`);
+                        }
+                        history.replaceState(null, '', window.location.pathname + window.location.search);
+                    }
+                } catch (e) {
+                    console.error('Failed to load shared data:', e);
+                }
+            }
+        }
+
+        // Share button: generate link (both datasets)
+        document.getElementById('shareBtn').addEventListener('click', async () => {
+            try {
+                const shareData = {
+                    tickets: tickets.map(t => ({ ...t, images: [] })),
+                    transport: transport.map(t => ({ ...t, images: [] }))
+                };
+                const encoded = await compressData(shareData);
+                const url = window.location.origin + window.location.pathname + '#data=' + encoded;
+
+                if (url.length > 32000) {
+                    showToast('数据过大，请使用「导出」功能分享文件', 4000);
+                    return;
+                }
+
+                await navigator.clipboard.writeText(url);
+                showToast('分享链接已复制到剪贴板！包含门票+交通票数据', 4000);
+            } catch (e) {
+                showToast('生成链接失败，请使用导出功能', 3000);
+            }
+        });
+
+        // Export JSON (both datasets)
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const exportData = { tickets, transport };
+            const json = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '谭总票务系统_数据_' + new Date().toISOString().slice(0,10) + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('数据已导出（含门票+交通票+图片）');
+        });
+
+        // Import JSON (supports both old and new format)
+        document.getElementById('importFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if (data && data.tickets && data.transport) {
+                        // New format
+                        tickets = data.tickets;
+                        transport = data.transport;
+                        localStorage.setItem('tickets', JSON.stringify(tickets));
+                        localStorage.setItem('transport', JSON.stringify(transport));
+                        updateStats();
+                        updateTabCounts();
+                        render();
+                        showToast(`已导入 ${tickets.length} 张门票 + ${transport.length} 张交通票`);
+                    } else if (Array.isArray(data)) {
+                        // Legacy format: just tickets
+                        tickets = data;
+                        localStorage.setItem('tickets', JSON.stringify(tickets));
+                        currentCategory = 'ticket';
+                        document.querySelector('.category-tab.active').classList.remove('active');
+                        document.querySelector('[data-category="ticket"]').classList.add('active');
+                        updateCategoryUI();
+                        updateStats();
+                        updateTabCounts();
+                        render();
+                        showToast(`已导入 ${data.length} 张门票`);
+                    } else {
+                        showToast('文件格式错误', 3000);
+                    }
+                } catch (err) {
+                    showToast('导入失败：无效的 JSON 文件', 3000);
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+
+        // ===== INIT =====
+        updateStats();
+        updateTabCounts();
+        render();
+        loadFromURL();
+    </script>
+</body>
+</html>
