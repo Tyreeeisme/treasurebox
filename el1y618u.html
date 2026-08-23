@@ -792,6 +792,29 @@
             background: var(--accent-light);
         }
 
+        /* Sync Status */
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            color: var(--ink-faint);
+        }
+
+        .sync-status--synced {
+            color: var(--accent);
+        }
+
+        .sync-status--syncing {
+            color: var(--transport);
+        }
+
+        .sync-status--error {
+            color: var(--warning);
+        }
+
         /* Share Toast */
         .toast {
             position: fixed;
@@ -858,6 +881,13 @@
         </button>
 
         <div class="sync-bar">
+            <span class="sync-status" id="syncStatus">☁️ 云同步</span>
+            <button class="sync-btn" id="syncNowBtn" title="立即同步数据到云端">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m0 0a9 9 0 019-9m-9 9a9 9 0 009 9"/>
+                </svg>
+                立即同步
+            </button>
             <button class="sync-btn" id="shareBtn" title="生成分享链接，其他设备打开即可查看">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
                     <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/>
@@ -1687,6 +1717,18 @@
             }
         }
 
+        // Sync Now button
+        document.getElementById('syncNowBtn').addEventListener('click', async () => {
+            if (!ensureToken()) {
+                showToast('需要 GitHub Token 才能同步', 3000);
+                return;
+            }
+            showToast('正在同步...', 2000);
+            await cloudPush();
+            await cloudPull();
+            showToast('同步完成！', 2000);
+        });
+
         // Share button: generate link (both datasets)
         document.getElementById('shareBtn').addEventListener('click', async () => {
             try {
@@ -1764,11 +1806,202 @@
             e.target.value = '';
         });
 
+        // ===== CLOUD SYNC (GitHub Repo) =====
+        const SYNC_CONFIG = {
+            repo: 'tyreeeisme/treasurebox',
+            file: 'el1y618u_data.json',
+            syncInterval: 30000, // auto-pull every 30s
+        };
+
+        // Token stored in localStorage for security (not in source code)
+        function getSyncToken() {
+            return localStorage.getItem('_sync_token') || '';
+        }
+
+        function setSyncToken(token) {
+            localStorage.setItem('_sync_token', token);
+        }
+
+        // Prompt for token if not set
+        function ensureToken() {
+            let token = getSyncToken();
+            if (!token) {
+                token = prompt('首次使用云同步，请输入 GitHub Token：\n（获取方式：GitHub Settings → Developer settings → Personal access tokens）');
+                if (token && token.trim()) {
+                    setSyncToken(token.trim());
+                    return token.trim();
+                }
+                return null;
+            }
+            return token;
+        }
+
+        let cloudSha = null;
+        let isSyncing = false;
+        let lastSyncTime = 0;
+
+        // Fetch latest data from GitHub
+        async function cloudPull() {
+            const token = getSyncToken();
+            if (!token) return false;
+            try {
+                const resp = await fetch(`https://api.github.com/repos/${SYNC_CONFIG.repo}/contents/${SYNC_CONFIG.file}`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    cache: 'no-store'
+                });
+                if (!resp.ok) return false;
+                const result = await resp.json();
+                cloudSha = result.sha;
+                const content = JSON.parse(atob(result.content));
+                // Only update if cloud has real data
+                if (content && content.tickets && content.transport) {
+                    const cloudTickets = content.tickets;
+                    const cloudTransport = content.transport;
+                    // Merge: cloud wins if it has more recent changes (simple: larger combined length or different data)
+                    const localStr = JSON.stringify({tickets, transport});
+                    const cloudStr = JSON.stringify({tickets: cloudTickets, transport: cloudTransport});
+                    if (localStr !== cloudStr) {
+                        // If cloud has data and local is just defaults, use cloud
+                        if (cloudTickets.length > 0 || cloudTransport.length > 0) {
+                            tickets = cloudTickets;
+                            transport = cloudTransport;
+                            localStorage.setItem('tickets', JSON.stringify(tickets));
+                            localStorage.setItem('transport', JSON.stringify(transport));
+                            updateStats();
+                            updateTabCounts();
+                            render();
+                        }
+                    }
+                }
+                lastSyncTime = Date.now();
+                updateSyncStatus('synced');
+                return true;
+            } catch (e) {
+                console.error('Cloud pull failed:', e);
+                updateSyncStatus('error');
+                return false;
+            }
+        }
+
+        // Push current data to GitHub
+        async function cloudPush() {
+            if (isSyncing) return;
+            const token = getSyncToken();
+            if (!token) return;
+            isSyncing = true;
+            updateSyncStatus('syncing');
+            try {
+                // Get latest sha first
+                const getResp = await fetch(`https://api.github.com/repos/${SYNC_CONFIG.repo}/contents/${SYNC_CONFIG.file}`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    cache: 'no-store'
+                });
+                if (getResp.ok) {
+                    const getResult = await getResp.json();
+                    cloudSha = getResult.sha;
+                }
+
+                // Push data (strip images to stay under GitHub size limit)
+                const syncData = {
+                    tickets: tickets.map(t => ({...t, images: (t.images || []).map(img => img.length > 50000 ? '[IMG_TOO_LARGE]' : img)})),
+                    transport: transport.map(t => ({...t, images: (t.images || []).map(img => img.length > 50000 ? '[IMG_TOO_LARGE]' : img)})),
+                    lastModified: Date.now()
+                };
+                const content = btoa(unescape(encodeURIComponent(JSON.stringify(syncData, null, 2))));
+
+                const putResp = await fetch(`https://api.github.com/repos/${SYNC_CONFIG.repo}/contents/${SYNC_CONFIG.file}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Sync data update',
+                        content: content,
+                        sha: cloudSha
+                    })
+                });
+
+                if (putResp.ok) {
+                    const putResult = await putResp.json();
+                    cloudSha = putResult.content.sha;
+                    lastSyncTime = Date.now();
+                    updateSyncStatus('synced');
+                } else {
+                    updateSyncStatus('error');
+                }
+            } catch (e) {
+                console.error('Cloud push failed:', e);
+                updateSyncStatus('error');
+            }
+            isSyncing = false;
+        }
+
+        // Debounced push (wait 2s after last change before syncing)
+        let pushTimer = null;
+        function schedulePush() {
+            if (pushTimer) clearTimeout(pushTimer);
+            pushTimer = setTimeout(cloudPush, 2000);
+        }
+
+        // Override save to also trigger cloud sync
+        const _originalSave = save;
+        save = function() {
+            localStorage.setItem(getStorageKey(), JSON.stringify(getCurrentData()));
+            updateStats();
+            updateTabCounts();
+            schedulePush();
+        };
+
+        // Sync status indicator
+        function updateSyncStatus(status) {
+            const el = document.getElementById('syncStatus');
+            if (!el) return;
+            const states = {
+                syncing: '🔄 同步中...',
+                synced: '✅ 已同步',
+                error: '⚠️ 同步失败',
+                idle: '☁️ 云同步'
+            };
+            el.textContent = states[status] || states.idle;
+            el.className = 'sync-status sync-status--' + status;
+        }
+
+        // Auto-pull interval
+        setInterval(async () => {
+            if (!document.hidden) {
+                await cloudPull();
+            }
+        }, SYNC_CONFIG.syncInterval);
+
+        // Also sync when page becomes visible
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && Date.now() - lastSyncTime > 10000) {
+                cloudPull();
+            }
+        });
+
         // ===== INIT =====
         updateStats();
         updateTabCounts();
         render();
         loadFromURL();
+
+        // Initial cloud sync (if token is already saved)
+        if (getSyncToken()) {
+            cloudPull().then(success => {
+                if (success && (tickets.length > 0 || transport.length > 0)) {
+                    cloudPush();
+                }
+            });
+        }
     </script>
 </body>
 </html>
