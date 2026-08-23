@@ -2,266 +2,266 @@
   "tickets": [
     {
       "id": "italy01",
-      "name": "米兰《最后的晚餐》Cenacolo Vinciano",
+      "name": "ç±³å°ãæåçæé¤ãCenacolo Vinciano",
       "date": "2026-09-25",
-      "venue": "米兰·感恩圣母教堂",
-      "link": "官网：cenacolovinciano.vivaticket.it\n每季度放票，秒空，需提前2-3个月抢\n15分钟限时参观\n无票时可购英文导览联票（约€70）",
+      "venue": "ç±³å°Â·ææ©å£æ¯æå ",
+      "link": "å®ç½ï¼cenacolovinciano.vivaticket.it\næ¯å­£åº¦æ¾ç¥¨ï¼ç§ç©ºï¼éæå2-3ä¸ªææ¢\n15åééæ¶åè§\næ ç¥¨æ¶å¯è´­è±æå¯¼è§èç¥¨ï¼çº¦â¬70ï¼",
       "images": [],
-      "notes": "🔴 最难抢！D2 10:00场次。",
+      "notes": "ð´ æé¾æ¢ï¼D2 10:00åºæ¬¡ã",
       "purchased": false
     },
     {
       "id": "italy02",
-      "name": "布雷拉美术馆 Pinacoteca di Brera",
+      "name": "å¸é·æç¾æ¯é¦ Pinacoteca di Brera",
       "date": "2026-09-25",
-      "venue": "米兰",
-      "link": "官网：pinacotecabrera.org\n建议提前预约选时段",
+      "venue": "ç±³å°",
+      "link": "å®ç½ï¼pinacotecabrera.org\nå»ºè®®æåé¢çº¦éæ¶æ®µ",
       "images": [],
-      "notes": "🟠 拉斐尔《圣母的婚礼》、曼特尼亚《哀悼基督》。D2 14:00场次。",
+      "notes": "ð  ææå°ãå£æ¯çå©ç¤¼ããæ¼ç¹å°¼äºãåæ¼åºç£ããD2 14:00åºæ¬¡ã",
       "purchased": false
     },
     {
       "id": "italy03",
-      "name": "米兰大教堂登顶 Duomo（电梯联票）",
+      "name": "ç±³å°å¤§æå ç»é¡¶ Duomoï¼çµæ¢¯èç¥¨ï¼",
       "date": "2026-09-25",
-      "venue": "米兰·米兰大教堂",
-      "link": "官网：duomomilano.it\n建议买电梯联票（含教堂+登顶+博物馆）",
+      "venue": "ç±³å°Â·ç±³å°å¤§æå ",
+      "link": "å®ç½ï¼duomomilano.it\nå»ºè®®ä¹°çµæ¢¯èç¥¨ï¼å«æå +ç»é¡¶+åç©é¦ï¼",
       "images": [],
-      "notes": "🟠 D2。",
+      "notes": "ð  D2ã",
       "purchased": false
     },
     {
       "id": "italy04",
-      "name": "乌菲兹美术馆 Uffizi Gallery",
+      "name": "ä¹è²å¹ç¾æ¯é¦ Uffizi Gallery",
       "date": "2026-09-26",
-      "venue": "佛罗伦萨",
-      "link": "官网：b-ticket.com/b-ticket/uffizi\n官方无差价平台，选时段预约",
+      "venue": "ä½ç½ä¼¦è¨",
+      "link": "å®ç½ï¼b-ticket.com/b-ticket/uffizi\nå®æ¹æ å·®ä»·å¹³å°ï¼éæ¶æ®µé¢çº¦",
       "images": [],
-      "notes": "🟠 波提切利《维纳斯的诞生》《春》，达芬奇、米开朗基罗、拉斐尔名作。D3 15:00场次。",
+      "notes": "ð  æ³¢æåå©ãç»´çº³æ¯çè¯çããæ¥ãï¼è¾¾è¬å¥ãç±³å¼æåºç½ãææå°åä½ãD3 15:00åºæ¬¡ã",
       "purchased": false
     },
     {
       "id": "italy05",
-      "name": "学院美术馆 Accademia Gallery（大卫像）",
+      "name": "å­¦é¢ç¾æ¯é¦ Accademia Galleryï¼å¤§å«åï¼",
       "date": "2026-09-27",
-      "venue": "佛罗伦萨",
-      "link": "官网：b-ticket.com/b-ticket/uffizi\n与乌菲兹同一购票平台",
+      "venue": "ä½ç½ä¼¦è¨",
+      "link": "å®ç½ï¼b-ticket.com/b-ticket/uffizi\nä¸ä¹è²å¹åä¸è´­ç¥¨å¹³å°",
       "images": [],
-      "notes": "🟠 米开朗基罗《大卫》雕塑原作。D4 09:00场次。",
+      "notes": "ð  ç±³å¼æåºç½ãå¤§å«ãéå¡åä½ãD4 09:00åºæ¬¡ã",
       "purchased": false
     },
     {
       "id": "italy06",
-      "name": "圣母百花大教堂·圆顶登顶 Brunelleschi Pass",
+      "name": "å£æ¯ç¾è±å¤§æå Â·åé¡¶ç»é¡¶ Brunelleschi Pass",
       "date": "2026-09-27",
-      "venue": "佛罗伦萨·圣母百花大教堂",
-      "link": "官网：tickets.duomo.firenze.it\n含圆顶登顶+乔托钟楼+洗礼堂套票",
+      "venue": "ä½ç½ä¼¦è¨Â·å£æ¯ç¾è±å¤§æå ",
+      "link": "å®ç½ï¼tickets.duomo.firenze.it\nå«åé¡¶ç»é¡¶+ä¹æéæ¥¼+æ´ç¤¼å å¥ç¥¨",
       "images": [],
-      "notes": "🟠 D4。",
+      "notes": "ð  D4ã",
       "purchased": false
     },
     {
       "id": "italy07",
-      "name": "那不勒斯国家考古博物馆 MANN",
+      "name": "é£ä¸åæ¯å½å®¶èå¤åç©é¦ MANN",
       "date": "2026-09-29",
-      "venue": "那不勒斯",
-      "link": "官网：museoarcheologiconapoli.it\n建议线上购票避免排队",
+      "venue": "é£ä¸åæ¯",
+      "link": "å®ç½ï¼museoarcheologiconapoli.it\nå»ºè®®çº¿ä¸è´­ç¥¨é¿åæé",
       "images": [],
-      "notes": "🟠 庞贝/赫库兰尼姆出土马赛克与雕塑，世界顶级。D6。",
+      "notes": "ð  åºè´/èµ«åºå°å°¼å§åºåé©¬èµåä¸éå¡ï¼ä¸çé¡¶çº§ãD6ã",
       "purchased": false
     },
     {
       "id": "italy08",
-      "name": "庞贝古城 Pompei Scavi",
+      "name": "åºè´å¤å Pompei Scavi",
       "date": "2026-10-01",
-      "venue": "庞贝",
-      "link": "官网：vivaticket.com\n2026/3起唯一官方渠道\n线上购票扫码入园",
+      "venue": "åºè´",
+      "link": "å®ç½ï¼vivaticket.com\n2026/3èµ·å¯ä¸å®æ¹æ¸ é\nçº¿ä¸è´­ç¥¨æ«ç å¥å­",
       "images": [],
-      "notes": "🟠 悲剧诗人之家、秘仪庄园。D8。",
+      "notes": "ð  æ²å§è¯äººä¹å®¶ãç§ä»ªåºå­ãD8ã",
       "purchased": false
     },
     {
       "id": "italy09",
-      "name": "诺曼宫 & 帕拉提纳礼拜堂",
+      "name": "è¯ºæ¼å®« & å¸ææçº³ç¤¼æå ",
       "date": "2026-10-02",
-      "venue": "巴勒莫",
-      "link": "官网：federicosecondo.org\n建议官网预约",
+      "venue": "å·´åè«",
+      "link": "å®ç½ï¼federicosecondo.org\nå»ºè®®å®ç½é¢çº¦",
       "images": [],
-      "notes": "🟠 拜占庭金色马赛克巅峰之作。D9。",
+      "notes": "ð  æå åº­éè²é©¬èµåå·å³°ä¹ä½ãD9ã",
       "purchased": false
     },
     {
       "id": "italy10",
-      "name": "陶尔米纳古希腊剧场 Teatro Antico",
+      "name": "é¶å°ç±³çº³å¤å¸èå§åº Teatro Antico",
       "date": "2026-10-04",
-      "venue": "陶尔米纳",
-      "link": "官网：parchiarcheologici.regione.sicilia.it\n可现场购票，旺季建议线上",
+      "venue": "é¶å°ç±³çº³",
+      "link": "å®ç½ï¼parchiarcheologici.regione.sicilia.it\nå¯ç°åºè´­ç¥¨ï¼æºå­£å»ºè®®çº¿ä¸",
       "images": [],
-      "notes": "🟢 以伊奥尼亚海为背景，远眺埃特纳火山。D11。",
+      "notes": "ð¢ ä»¥ä¼å¥¥å°¼äºæµ·ä¸ºèæ¯ï¼è¿çºåç¹çº³ç«å±±ãD11ã",
       "purchased": false
     },
     {
       "id": "italy11",
-      "name": "古罗马斗兽场套票 Colosseo",
+      "name": "å¤ç½é©¬æå½åºå¥ç¥¨ Colosseo",
       "date": "2026-10-07",
-      "venue": "罗马",
-      "link": "官网：ticketing.colosseo.it\n含斗兽场+古罗马广场+帕拉蒂尼山\n需护照原件入场",
+      "venue": "ç½é©¬",
+      "link": "å®ç½ï¼ticketing.colosseo.it\nå«æå½åº+å¤ç½é©¬å¹¿åº+å¸æèå°¼å±±\néæ¤ç§åä»¶å¥åº",
       "images": [],
-      "notes": "🔴 强制预约！D14。",
+      "notes": "ð´ å¼ºå¶é¢çº¦ï¼D14ã",
       "purchased": false
     },
     {
       "id": "italy12",
-      "name": "万神殿 Pantheon",
+      "name": "ä¸ç¥æ®¿ Pantheon",
       "date": "2026-10-07",
-      "venue": "罗马",
-      "link": "官网：museiitaliani.it\n建议提前预约",
+      "venue": "ç½é©¬",
+      "link": "å®ç½ï¼museiitaliani.it\nå»ºè®®æåé¢çº¦",
       "images": [],
-      "notes": "🟠 D14下午。",
+      "notes": "ð  D14ä¸åã",
       "purchased": false
     },
     {
       "id": "italy13",
-      "name": "梵蒂冈博物馆（含西斯廷礼拜堂）",
+      "name": "æ¢µèååç©é¦ï¼å«è¥¿æ¯å»·ç¤¼æå ï¼",
       "date": "2026-10-08",
-      "venue": "梵蒂冈",
-      "link": "官网：tickets.museivaticani.va\n提前60天放票\n含西斯廷礼拜堂+拉斐尔画室",
+      "venue": "æ¢µèå",
+      "link": "å®ç½ï¼tickets.museivaticani.va\næå60å¤©æ¾ç¥¨\nå«è¥¿æ¯å»·ç¤¼æå +ææå°ç»å®¤",
       "images": [],
-      "notes": "🔴 强制预约！米开朗基罗《创世纪》《末日审判》。D15。",
+      "notes": "ð´ å¼ºå¶é¢çº¦ï¼ç±³å¼æåºç½ãåä¸çºªããæ«æ¥å®¡å¤ããD15ã",
       "purchased": false
     },
     {
       "id": "italy14",
-      "name": "博尔盖塞美术馆 Galleria Borghese",
+      "name": "åå°çå¡ç¾æ¯é¦ Galleria Borghese",
       "date": "2026-10-08",
-      "venue": "罗马",
-      "link": "官网：tosc.it/galleria-borghese\n提前30-45天预约\n限时2小时参观",
+      "venue": "ç½é©¬",
+      "link": "å®ç½ï¼tosc.it/galleria-borghese\næå30-45å¤©é¢çº¦\néæ¶2å°æ¶åè§",
       "images": [],
-      "notes": "🔴 最难抢！贝尼尼《阿波罗与达芙妮》《劫夺普洛塞庇娜》、卡拉瓦乔。D15 09:00场次。",
+      "notes": "ð´ æé¾æ¢ï¼è´å°¼å°¼ãé¿æ³¢ç½ä¸è¾¾èå¦®ããå«å¤ºæ®æ´å¡åºå¨ããå¡æç¦ä¹ãD15 09:00åºæ¬¡ã",
       "purchased": false
     }
   ],
   "transport": [
     {
       "id": "trans01",
-      "name": "Malpensa Express 机场快线",
+      "name": "Malpensa Express æºåºå¿«çº¿",
       "date": "2026-09-24",
-      "venue": "Malpensa机场 → 米兰中央车站",
-      "link": "官网：malpensaexpress.it\n车程约50分钟\n可现场自助机购买或官网预购",
+      "venue": "Malpensaæºåº â ç±³å°ä¸­å¤®è½¦ç«",
+      "link": "å®ç½ï¼malpensaexpress.it\nè½¦ç¨çº¦50åé\nå¯ç°åºèªå©æºè´­ä¹°æå®ç½é¢è´­",
       "images": [],
-      "notes": "D1 抵达后乘坐。建议买往返票更划算。",
+      "notes": "D1 æµè¾¾åä¹åãå»ºè®®ä¹°å¾è¿ç¥¨æ´åç®ã",
       "purchased": false
     },
     {
       "id": "trans02",
-      "name": "米兰→佛罗伦萨 高速铁路",
+      "name": "ç±³å°âä½ç½ä¼¦è¨ é«ééè·¯",
       "date": "2026-09-26",
-      "venue": "Milano Centrale → Firenze S.M.N.",
-      "link": "购票渠道：trenitalia.com 或 italotreno.com\n车程约1小时55分\n提前购票有Super Economy票价\nTrenitalia Frecciarossa 或 Italo",
+      "venue": "Milano Centrale â Firenze S.M.N.",
+      "link": "è´­ç¥¨æ¸ éï¼trenitalia.com æ italotreno.com\nè½¦ç¨çº¦1å°æ¶55å\næåè´­ç¥¨æSuper Economyç¥¨ä»·\nTrenitalia Frecciarossa æ Italo",
       "images": [],
-      "notes": "D3 上午出发。建议提前1-2个月买早鸟票，价格€19.9起。",
+      "notes": "D3 ä¸ååºåãå»ºè®®æå1-2ä¸ªæä¹°æ©é¸ç¥¨ï¼ä»·æ ¼â¬19.9èµ·ã",
       "purchased": false
     },
     {
       "id": "trans03",
-      "name": "佛罗伦萨→那不勒斯 高速铁路",
+      "name": "ä½ç½ä¼¦è¨âé£ä¸åæ¯ é«ééè·¯",
       "date": "2026-09-29",
-      "venue": "Firenze S.M.N. → Napoli Centrale",
-      "link": "购票渠道：trenitalia.com 或 italotreno.com\n车程约2小时40分\nFrecciarossa/Italo均可",
+      "venue": "Firenze S.M.N. â Napoli Centrale",
+      "link": "è´­ç¥¨æ¸ éï¼trenitalia.com æ italotreno.com\nè½¦ç¨çº¦2å°æ¶40å\nFrecciarossa/Italoåå¯",
       "images": [],
-      "notes": "D6 上午出发。同样建议提前买早鸟价。",
+      "notes": "D6 ä¸ååºåãåæ ·å»ºè®®æåä¹°æ©é¸ä»·ã",
       "purchased": false
     },
     {
       "id": "trans04",
-      "name": "那不勒斯↔卡普里岛 水翼船",
+      "name": "é£ä¸åæ¯âå¡æ®éå² æ°´ç¿¼è¹",
       "date": "2026-09-30",
-      "venue": "Napoli Molo Beverello ↔ Capri Marina Grande",
-      "link": "购票渠道：capritourism.com 或 ferryhopper.com\n船程约50分钟\n水翼船(Aliscafo)比慢船快\n旺季建议提前1天购买",
+      "venue": "Napoli Molo Beverello â Capri Marina Grande",
+      "link": "è´­ç¥¨æ¸ éï¼capritourism.com æ ferryhopper.com\nè¹ç¨çº¦50åé\næ°´ç¿¼è¹(Aliscafo)æ¯æ¢è¹å¿«\næºå­£å»ºè®®æå1å¤©è´­ä¹°",
       "images": [],
-      "notes": "D7 往返。注意看天气，风浪大可能停航。回程建议预留余量。",
+      "notes": "D7 å¾è¿ãæ³¨æçå¤©æ°ï¼é£æµªå¤§å¯è½åèªãåç¨å»ºè®®é¢çä½éã",
       "purchased": false
     },
     {
       "id": "trans05",
-      "name": "那不勒斯→庞贝 Circumvesuviana",
+      "name": "é£ä¸åæ¯âåºè´ Circumvesuviana",
       "date": "2026-10-01",
-      "venue": "Napoli Garibaldi → Pompei Scavi",
-      "link": "运营方：eavsrl.it\n车程约35分钟\nCircumvesuviana环维苏威铁路\n现场购票即可，班次频繁",
+      "venue": "Napoli Garibaldi â Pompei Scavi",
+      "link": "è¿è¥æ¹ï¼eavsrl.it\nè½¦ç¨çº¦35åé\nCircumvesuvianaç¯ç»´èå¨éè·¯\nç°åºè´­ç¥¨å³å¯ï¼ç­æ¬¡é¢ç¹",
       "images": [],
-      "notes": "D8 上午。注意保管财物，车上较拥挤。在Pompei Scavi-Villa dei Misteri站下。",
+      "notes": "D8 ä¸åãæ³¨æä¿ç®¡è´¢ç©ï¼è½¦ä¸è¾æ¥æ¤ãå¨Pompei Scavi-Villa dei Misteriç«ä¸ã",
       "purchased": false
     },
     {
       "id": "trans06",
-      "name": "那不勒斯→巴勒莫 航班",
+      "name": "é£ä¸åæ¯âå·´åè« èªç­",
       "date": "2026-10-01",
-      "venue": "NAP 那不勒斯机场 → PMO 巴勒莫机场",
-      "link": "航空公司：ITA Airways 或 Ryanair\n飞行时间约1小时\n建议提前在官网购票\nRyanair价格更低但行李另付",
+      "venue": "NAP é£ä¸åæ¯æºåº â PMO å·´åè«æºåº",
+      "link": "èªç©ºå¬å¸ï¼ITA Airways æ Ryanair\né£è¡æ¶é´çº¦1å°æ¶\nå»ºè®®æåå¨å®ç½è´­ç¥¨\nRyanairä»·æ ¼æ´ä½ä½è¡æå¦ä»",
       "images": [],
-      "notes": "D8 下午/傍晚航班。庞贝游览后前往机场。提前2小时到机场。",
+      "notes": "D8 ä¸å/åæèªç­ãåºè´æ¸¸è§ååå¾æºåºãæå2å°æ¶å°æºåºã",
       "purchased": false
     },
     {
       "id": "trans07",
-      "name": "巴勒莫↔切法卢 区间火车",
+      "name": "å·´åè«âåæ³å¢ åºé´ç«è½¦",
       "date": "2026-10-03",
-      "venue": "Palermo Centrale ↔ Cefalù",
-      "link": "购票渠道：trenitalia.com\n车程约50分钟\n区间车(Regionale)班次较多\n可现场购票",
+      "venue": "Palermo Centrale â CefalÃ¹",
+      "link": "è´­ç¥¨æ¸ éï¼trenitalia.com\nè½¦ç¨çº¦50åé\nåºé´è½¦(Regionale)ç­æ¬¡è¾å¤\nå¯ç°åºè´­ç¥¨",
       "images": [],
-      "notes": "D10 当日往返。切法卢海滩小镇，半日游足够。",
+      "notes": "D10 å½æ¥å¾è¿ãåæ³å¢æµ·æ»©å°éï¼åæ¥æ¸¸è¶³å¤ã",
       "purchased": false
     },
     {
       "id": "trans08",
-      "name": "巴勒莫→陶尔米纳 城际大巴",
+      "name": "å·´åè«âé¶å°ç±³çº³ åéå¤§å·´",
       "date": "2026-10-04",
-      "venue": "Palermo → Taormina",
-      "link": "运营方：interbus.it 或 saisautolinee.it\n车程约3.5-5小时\n也可选择火车(需在Messina转车，约3-4h)\n大巴直达更方便",
+      "venue": "Palermo â Taormina",
+      "link": "è¿è¥æ¹ï¼interbus.it æ saisautolinee.it\nè½¦ç¨çº¦3.5-5å°æ¶\nä¹å¯éæ©ç«è½¦(éå¨Messinaè½¬è½¦ï¼çº¦3-4h)\nå¤§å·´ç´è¾¾æ´æ¹ä¾¿",
       "images": [],
-      "notes": "D11 上午出发。建议选择大巴直达，省去转车麻烦。提前在线购票。",
+      "notes": "D11 ä¸ååºåãå»ºè®®éæ©å¤§å·´ç´è¾¾ï¼çå»è½¬è½¦éº»ç¦ãæåå¨çº¿è´­ç¥¨ã",
       "purchased": false
     },
     {
       "id": "trans09",
-      "name": "陶尔米纳↔锡拉库萨 火车/大巴",
+      "name": "é¶å°ç±³çº³âé¡æåºè¨ ç«è½¦/å¤§å·´",
       "date": "2026-10-05",
-      "venue": "Taormina-Giardini ↔ Siracusa",
-      "link": "火车：trenitalia.com（约1.5-2小时）\n大巴：interbus.it（约1.5-2小时）\n火车从Taormina-Giardini站出发\n大巴可能更方便到达市中心",
+      "venue": "Taormina-Giardini â Siracusa",
+      "link": "ç«è½¦ï¼trenitalia.comï¼çº¦1.5-2å°æ¶ï¼\nå¤§å·´ï¼interbus.itï¼çº¦1.5-2å°æ¶ï¼\nç«è½¦ä»Taormina-Giardiniç«åºå\nå¤§å·´å¯è½æ´æ¹ä¾¿å°è¾¾å¸ä¸­å¿",
       "images": [],
-      "notes": "D12 当日往返。锡拉库萨古城(Ortigia岛)。注意末班车时间。",
+      "notes": "D12 å½æ¥å¾è¿ãé¡æåºè¨å¤å(Ortigiaå²)ãæ³¨ææ«ç­è½¦æ¶é´ã",
       "purchased": false
     },
     {
       "id": "trans10",
-      "name": "陶尔米纳→卡塔尼亚机场 大巴",
+      "name": "é¶å°ç±³çº³âå¡å¡å°¼äºæºåº å¤§å·´",
       "date": "2026-10-06",
-      "venue": "Taormina → CTA 卡塔尼亚机场",
-      "link": "运营方：interbus.it\n车程约1小时\n班次较多，提前查看时刻表\nEtna Trasporti也有线路",
+      "venue": "Taormina â CTA å¡å¡å°¼äºæºåº",
+      "link": "è¿è¥æ¹ï¼interbus.it\nè½¦ç¨çº¦1å°æ¶\nç­æ¬¡è¾å¤ï¼æåæ¥çæ¶å»è¡¨\nEtna Trasportiä¹æçº¿è·¯",
       "images": [],
-      "notes": "D13 根据航班时间选择班次。建议提前2.5小时到达机场。",
+      "notes": "D13 æ ¹æ®èªç­æ¶é´éæ©ç­æ¬¡ãå»ºè®®æå2.5å°æ¶å°è¾¾æºåºã",
       "purchased": false
     },
     {
       "id": "trans11",
-      "name": "卡塔尼亚→罗马 航班",
+      "name": "å¡å¡å°¼äºâç½é©¬ èªç­",
       "date": "2026-10-06",
-      "venue": "CTA 卡塔尼亚机场 → FCO 罗马菲乌米奇诺机场",
-      "link": "航空公司：ITA Airways 或 Ryanair\n飞行时间约1小时10分\n建议提前官网购票",
+      "venue": "CTA å¡å¡å°¼äºæºåº â FCO ç½é©¬è²ä¹ç±³å¥è¯ºæºåº",
+      "link": "èªç©ºå¬å¸ï¼ITA Airways æ Ryanair\né£è¡æ¶é´çº¦1å°æ¶10å\nå»ºè®®æåå®ç½è´­ç¥¨",
       "images": [],
-      "notes": "D13 飞罗马。抵达后乘Leonardo Express进城。",
+      "notes": "D13 é£ç½é©¬ãæµè¾¾åä¹Leonardo Expressè¿åã",
       "purchased": false
     },
     {
       "id": "trans12",
-      "name": "Leonardo Express 机场快线",
+      "name": "Leonardo Express æºåºå¿«çº¿",
       "date": "2026-10-06",
-      "venue": "Roma FCO 机场 → Roma Termini",
-      "link": "购票渠道：trenitalia.com\n车程约32分钟\n直达无站停\n也可现场自助机购买",
+      "venue": "Roma FCO æºåº â Roma Termini",
+      "link": "è´­ç¥¨æ¸ éï¼trenitalia.com\nè½¦ç¨çº¦32åé\nç´è¾¾æ ç«å\nä¹å¯ç°åºèªå©æºè´­ä¹°",
       "images": [],
-      "notes": "D13 抵达罗马后乘坐。单程约€14，每15-30分钟一班。",
+      "notes": "D13 æµè¾¾ç½é©¬åä¹åãåç¨çº¦â¬14ï¼æ¯15-30åéä¸ç­ã",
       "purchased": false
     }
   ],
-  "lastModified": 1787476056150
+  "lastModified": 1787476160005
 }
