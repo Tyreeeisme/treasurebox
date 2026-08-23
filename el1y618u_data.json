@@ -8,7 +8,7 @@
       "link": "官网：cenacolovinciano.vivaticket.it\n每季度放票，秒空，需提前2-3个月抢\n15分钟限时参观\n无票时可购英文导览联票（约€70）",
       "images": [],
       "notes": "🔴 最难抢！D2 10:00场次。",
-      "purchased": false
+      "purchased": true
     },
     {
       "id": "italy02",
@@ -265,5 +265,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1787505426923
+  "lastModified": 1787505550540
 }
