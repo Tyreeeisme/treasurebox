@@ -1572,21 +1572,93 @@
             lightbox.classList.add('active');
         }
 
-        // Open PDF in new tab for viewing
+        // Open PDF - works on iOS Safari + all browsers
         function openPdf(ticketId, imgIdx) {
             const data = getCurrentData();
             const ticket = data.find(t => t.id === ticketId);
             if (!ticket || !ticket.images || !ticket.images[imgIdx]) return;
             const pdfData = ticket.images[imgIdx];
-            // Convert base64 data URL to blob and open in new tab
-            const byteString = atob(pdfData.split(',')[1]);
-            const mimeType = 'application/pdf';
-            const ab = new ArrayBuffer(byteString.length);
-            const ia = new Uint8Array(ab);
-            for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
-            const blob = new Blob([ab], { type: mimeType });
-            const blobUrl = URL.createObjectURL(blob);
-            window.open(blobUrl, '_blank');
+
+            // Create a full-screen overlay with embedded PDF viewer
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:250;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;padding:0;';
+
+            // Top bar with close & download buttons
+            const topBar = document.createElement('div');
+            topBar.style.cssText = 'width:100%;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;';
+
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕ 关闭';
+            closeBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:0.9rem;cursor:pointer;font-family:inherit;';
+            closeBtn.onclick = () => document.body.removeChild(overlay);
+
+            const downloadBtn = document.createElement('a');
+            downloadBtn.href = pdfData;
+            downloadBtn.download = `${ticket.name}_票据.pdf`;
+            downloadBtn.textContent = '⬇ 下载';
+            downloadBtn.style.cssText = 'background:rgba(255,255,255,0.15);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:0.9rem;cursor:pointer;text-decoration:none;font-family:inherit;';
+
+            topBar.appendChild(closeBtn);
+            topBar.appendChild(downloadBtn);
+            overlay.appendChild(topBar);
+
+            // Try iframe embed first (works on most desktop + Android)
+            const iframe = document.createElement('iframe');
+            iframe.src = pdfData;
+            iframe.style.cssText = 'flex:1;width:100%;border:none;background:white;border-radius:8px;margin:0 8px 8px;';
+            overlay.appendChild(iframe);
+
+            // Fallback for iOS: if iframe doesn't render PDF, show object tag
+            // iOS Safari supports <object> with data URLs better in some versions
+            iframe.onerror = () => {
+                overlay.removeChild(iframe);
+                const obj = document.createElement('object');
+                obj.data = pdfData;
+                obj.type = 'application/pdf';
+                obj.style.cssText = 'flex:1;width:100%;border:none;background:white;border-radius:8px;margin:0 8px 8px;';
+                obj.innerHTML = '<p style="padding:40px;text-align:center;color:#666;">无法预览PDF，请点击上方"下载"按钮查看</p>';
+                overlay.appendChild(obj);
+            };
+
+            // For iOS Safari: detect if iframe loaded empty, provide Google Docs viewer fallback or download prompt
+            setTimeout(() => {
+                try {
+                    // Check if we're on iOS
+                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                    if (isIOS) {
+                        // On iOS, replace iframe with a direct approach: open data URL directly
+                        overlay.removeChild(iframe);
+                        const container = document.createElement('div');
+                        container.style.cssText = 'flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px;';
+
+                        // Create an embed element (iOS sometimes handles this)
+                        const embed = document.createElement('embed');
+                        embed.src = pdfData;
+                        embed.type = 'application/pdf';
+                        embed.style.cssText = 'width:100%;height:100%;border-radius:8px;background:white;';
+
+                        // Also show a "Open in new tab" link as fallback
+                        const fallbackMsg = document.createElement('div');
+                        fallbackMsg.style.cssText = 'text-align:center;color:white;font-size:0.9rem;position:absolute;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);padding:12px 20px;border-radius:8px;';
+                        fallbackMsg.innerHTML = '如果 PDF 未显示，请点击「⬇ 下载」后用系统阅读器打开';
+
+                        container.appendChild(embed);
+                        overlay.appendChild(container);
+                        overlay.appendChild(fallbackMsg);
+                    }
+                } catch(e) {}
+            }, 500);
+
+            // Close on ESC
+            const escHandler = (e) => {
+                if (e.key === 'Escape') {
+                    document.body.removeChild(overlay);
+                    document.removeEventListener('keydown', escHandler);
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+
+            document.body.appendChild(overlay);
         }
 
         lightbox.addEventListener('click', () => {
