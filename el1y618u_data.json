@@ -38,10 +38,13 @@
       "date": "2026-09-26",
       "venue": "佛罗伦萨",
       "link": "官网：b-ticket.com/b-ticket/uffizi\n官方无差价平台，选时段预约",
-      "images": [],
+      "images": [
+        "[IMG_TOO_LARGE]"
+      ],
       "notes": "🟠 波提切利《维纳斯的诞生》《春》，达芬奇、米开朗基罗、拉斐尔名作。D3 15:00场次。",
       "purchased": true,
-      "lastModified": 1789066929969
+      "lastModified": 1789066994115,
+      "pdfLink": ""
     },
     {
       "id": "italy05",
@@ -270,5 +273,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1789066932817
+  "lastModified": 1789066996717
 }
