@@ -140,7 +140,8 @@
       "link": "官网：tickets.museivaticani.va\n提前60天放票\n含西斯廷礼拜堂+拉斐尔画室",
       "images": [],
       "notes": "🔴 强制预约！米开朗基罗《创世纪》《末日审判》。D15。",
-      "purchased": false
+      "purchased": true,
+      "lastModified": 1789067251554
     },
     {
       "id": "italy14",
@@ -275,5 +276,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1789067054176
+  "lastModified": 1789067254046
 }
