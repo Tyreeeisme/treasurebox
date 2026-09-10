@@ -102,12 +102,15 @@
       "id": "italy09",
       "name": "诺曼宫 & 帕拉提纳礼拜堂",
       "date": "2026-10-02",
-      "venue": "巴勒莫",
+      "venue": "巴勒莫 11:30-12:30",
       "link": "官网：federicosecondo.org\n建议官网预约",
-      "images": [],
+      "images": [
+        "[IMG_TOO_LARGE]"
+      ],
       "notes": "🟠 拜占庭金色马赛克巅峰之作。D9。",
       "purchased": true,
-      "lastModified": 1789067957168
+      "lastModified": 1789068026581,
+      "pdfLink": ""
     },
     {
       "id": "italy10",
@@ -286,5 +289,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1789067959742
+  "lastModified": 1789068029130
 }
