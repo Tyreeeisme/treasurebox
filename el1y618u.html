@@ -2057,11 +2057,26 @@
         // Rules:
         //   1. Match tickets by ID
         //   2. If both sides have the same ID, keep the one with newer lastModified
-        //   3. If only one side has the ticket, keep it (it's new)
-        //   4. Deleted tickets: if a ticket is marked _deleted, propagate deletion
-        //   5. Images: large base64 images are stored only locally. Cloud stores [IMG_TOO_LARGE].
+        //   3. If neither has lastModified (legacy data), prefer CLOUD (it came from another device)
+        //   4. If only one side has the ticket, keep it (it's new)
+        //   5. Deleted tickets: if a ticket is marked _deleted, propagate deletion
+        //   6. Images: large base64 images are stored only locally. Cloud stores [IMG_TOO_LARGE].
         //      When merging, if cloud has placeholder but local has real image, keep local.
-        //      If a new device has no local image, the placeholder stays (user re-uploads on that device).
+
+        // Check if a ticket is still in its default/preset state (never user-modified)
+        const DEFAULT_IDS = new Set([...ITALY_TICKETS.map(t=>t.id), ...ITALY_TRANSPORT.map(t=>t.id)]);
+        const DEFAULT_MAP = new Map([...ITALY_TICKETS, ...ITALY_TRANSPORT].map(t => [t.id, t]));
+
+        function isDefaultTicket(ticket) {
+            const def = DEFAULT_MAP.get(ticket.id);
+            if (!def) return false; // custom ticket, not default
+            // If it's been modified (purchased, has images, has pdfLink, notes changed, etc.)
+            return !ticket.lastModified
+                && ticket.purchased === def.purchased
+                && (ticket.images || []).filter(i => i && i !== '[IMG_TOO_LARGE]').length === (def.images || []).length
+                && !ticket.pdfLink;
+        }
+
         function smartMerge(cloudArr, localArr) {
             const cloudMap = new Map((cloudArr || []).map(t => [t.id, t]));
             const localMap = new Map((localArr || []).map(t => [t.id, t]));
@@ -2076,6 +2091,9 @@
                 if (cloud && cloud._deleted && local && local._deleted) return;
                 if (cloud && cloud._deleted && !local) return;
                 if (local && local._deleted && !cloud) return;
+                // If cloud says deleted but local still has it (not yet synced deletion)
+                if (cloud && cloud._deleted && local) return;
+                if (local && local._deleted && cloud) return;
 
                 if (cloud && !local) {
                     // Only in cloud — add it (new ticket from another device)
@@ -2084,10 +2102,29 @@
                     // Only in local — add it (new ticket on this device)
                     merged.push(local);
                 } else {
-                    // Both exist — newer wins, but preserve local images
+                    // Both exist — determine winner
                     const cloudTime = cloud.lastModified || 0;
                     const localTime = local.lastModified || 0;
-                    const winner = cloudTime > localTime ? { ...cloud } : { ...local };
+
+                    let winner;
+                    if (cloudTime > 0 || localTime > 0) {
+                        // At least one has a timestamp — newer wins
+                        winner = cloudTime >= localTime ? { ...cloud } : { ...local };
+                    } else {
+                        // Neither has a timestamp (legacy data on both sides)
+                        // If local is still default/unmodified, prefer cloud
+                        // If cloud is default/unmodified, prefer local
+                        // If both modified (but no timestamp), prefer cloud (it was synced from another device)
+                        if (isDefaultTicket(local)) {
+                            winner = { ...cloud };
+                        } else if (isDefaultTicket(cloud)) {
+                            winner = { ...local };
+                        } else {
+                            // Both modified but no timestamps — prefer cloud
+                            // (cloud data was pushed from the device where edits happened)
+                            winner = { ...cloud };
+                        }
+                    }
 
                     // Always preserve real local images over cloud placeholders
                     if (winner.images && local.images) {
