@@ -160,12 +160,13 @@
       "id": "italy14",
       "name": "博尔盖塞美术馆 Galleria Borghese",
       "date": "2026-10-08",
-      "venue": "罗马",
+      "venue": "罗马 17:45",
       "link": "官网：tosc.it/galleria-borghese\n提前30-45天预约\n限时2小时参观",
       "images": [],
       "notes": "🔴 最难抢！贝尼尼《阿波罗与达芙妮》《劫夺普洛塞庇娜》、卡拉瓦乔。D15 09:00场次。",
       "purchased": true,
-      "lastModified": 1789068129997
+      "lastModified": 1789068219934,
+      "pdfLink": "https://www.ticketone.it/imageservlet?fun=express_ticket&t=10719646547a782694a8&affiliate=T2C&errordoc=globalError"
     }
   ],
   "transport": [
@@ -290,5 +291,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1789068132555
+  "lastModified": 1789068222997
 }
