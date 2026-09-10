@@ -174,11 +174,41 @@
         .filters {
             display: flex;
             gap: 4px;
-            margin-bottom: 32px;
+            margin-bottom: 12px;
             background: var(--border);
             padding: 4px;
             border-radius: var(--radius-md);
             width: fit-content;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--surface);
+            transition: border-color 0.2s ease;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--accent);
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: var(--ink);
+            width: 100%;
+        }
+
+        .search-bar input::placeholder {
+            color: var(--ink-muted);
         }
 
         .filter-btn {
@@ -927,6 +957,13 @@
             <button class="filter-btn" data-filter="purchased">已购</button>
         </div>
 
+        <div class="search-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="flex-shrink:0;opacity:0.5">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="searchInput" placeholder="搜索门票名称、地点、备注..." autocomplete="off">
+        </div>
+
         <button class="add-trigger" id="addTrigger">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -1427,11 +1464,24 @@
         }
 
         // ===== RENDER =====
+        let searchQuery = '';
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value.trim().toLowerCase();
+            render();
+        });
+
         function render() {
             const data = getCurrentData();
             const filtered = data.filter(t => {
-                if (currentFilter === 'purchased') return t.purchased;
-                if (currentFilter === 'pending') return !t.purchased;
+                // Filter by purchase status
+                if (currentFilter === 'purchased' && !t.purchased) return false;
+                if (currentFilter === 'pending' && t.purchased) return false;
+                // Filter by search query
+                if (searchQuery) {
+                    const haystack = [t.name, t.venue, t.notes, t.link, t.date].filter(Boolean).join(' ').toLowerCase();
+                    if (!haystack.includes(searchQuery)) return false;
+                }
                 return true;
             });
 
@@ -1452,6 +1502,8 @@
             ticketsList.innerHTML = filtered.map(ticket => {
                 const statusClass = ticket.purchased ? 'purchased' : 'pending';
                 const statusText = ticket.purchased ? '已购' : '待购';
+                const hasPdf = ticket.pdfLink || (ticket.images && ticket.images.some(img => img && img.startsWith && img.startsWith('data:application/pdf')));
+                const hasImages = ticket.images && ticket.images.filter(u => u && u !== '[IMG_TOO_LARGE]' && !u.startsWith('data:application/pdf')).length > 0;
 
                 return `
                     <div class="ticket-card ${statusClass}" data-id="${ticket.id}">
@@ -1462,7 +1514,7 @@
                                 </svg>
                             </div>
                             <div class="ticket-info" onclick="toggleExpand('${ticket.id}')">
-                                <div class="ticket-name">${escapeHtml(ticket.name)}</div>
+                                <div class="ticket-name">${escapeHtml(ticket.name)}${hasPdf ? ' <span style="color:#c44536;font-size:0.75em" title="含PDF票据">📄</span>' : ''}${hasImages ? ' <span style="color:var(--accent);font-size:0.75em" title="含图片">🖼</span>' : ''}</div>
                                 <div class="ticket-meta">
                                     ${ticket.date ? `<span>📅 ${formatDate(ticket.date)}</span>` : ''}
                                     ${ticket.venue ? `<span>📍 ${escapeHtml(ticket.venue)}</span>` : ''}
@@ -1537,6 +1589,7 @@
             const ticket = data.find(t => t.id === id);
             if (ticket) {
                 ticket.purchased = !ticket.purchased;
+                ticket.lastModified = Date.now();
                 save();
                 render();
             }
@@ -1550,7 +1603,15 @@
         function deleteTicket(id) {
             const typeLabel = currentCategory === 'ticket' ? '门票' : '交通票';
             if (confirm(`确定删除这张${typeLabel}吗？`)) {
-                setCurrentData(getCurrentData().filter(t => t.id !== id));
+                const data = getCurrentData();
+                const ticket = data.find(t => t.id === id);
+                if (ticket) {
+                    // Soft delete: mark as deleted with timestamp for sync propagation
+                    ticket._deleted = true;
+                    ticket.lastModified = Date.now();
+                }
+                // Remove from display (but keep in array briefly for sync)
+                setCurrentData(data.filter(t => !t._deleted));
                 save();
                 render();
             }
@@ -1608,6 +1669,7 @@
                 pdfLink: document.getElementById('inputPdfLink').value.trim(),
                 images: [...pendingImages],
                 notes: document.getElementById('inputNotes').value.trim(),
+                lastModified: Date.now(),
             };
 
             if (!data.name) return;
@@ -1868,15 +1930,15 @@
             }
         }
 
-        // Sync Now button
+        // Sync Now button — pull first (merge), then push merged result
         document.getElementById('syncNowBtn').addEventListener('click', async () => {
             if (!ensureToken()) {
                 showToast('需要 GitHub Token 才能同步', 3000);
                 return;
             }
             showToast('正在同步...', 2000);
-            await cloudPush();
-            await cloudPull();
+            await cloudPull();   // pull & merge first
+            await cloudPush();   // then push merged data
             showToast('同步完成！', 2000);
         });
 
@@ -1991,7 +2053,79 @@
         let isSyncing = false;
         let lastSyncTime = 0;
 
-        // Fetch latest data from GitHub
+        // ===== SMART MERGE: per-ticket merge by lastModified timestamp =====
+        // Rules:
+        //   1. Match tickets by ID
+        //   2. If both sides have the same ID, keep the one with newer lastModified
+        //   3. If only one side has the ticket, keep it (it's new)
+        //   4. Deleted tickets: if a ticket is marked _deleted, propagate deletion
+        //   5. Images: large base64 images are stored only locally. Cloud stores [IMG_TOO_LARGE].
+        //      When merging, if cloud has placeholder but local has real image, keep local.
+        //      If a new device has no local image, the placeholder stays (user re-uploads on that device).
+        function smartMerge(cloudArr, localArr) {
+            const cloudMap = new Map((cloudArr || []).map(t => [t.id, t]));
+            const localMap = new Map((localArr || []).map(t => [t.id, t]));
+            const allIds = new Set([...cloudMap.keys(), ...localMap.keys()]);
+            const merged = [];
+
+            allIds.forEach(id => {
+                const cloud = cloudMap.get(id);
+                const local = localMap.get(id);
+
+                // Skip deleted tickets
+                if (cloud && cloud._deleted && local && local._deleted) return;
+                if (cloud && cloud._deleted && !local) return;
+                if (local && local._deleted && !cloud) return;
+
+                if (cloud && !local) {
+                    // Only in cloud — add it (new ticket from another device)
+                    merged.push(cloud);
+                } else if (local && !cloud) {
+                    // Only in local — add it (new ticket on this device)
+                    merged.push(local);
+                } else {
+                    // Both exist — newer wins, but preserve local images
+                    const cloudTime = cloud.lastModified || 0;
+                    const localTime = local.lastModified || 0;
+                    const winner = cloudTime > localTime ? { ...cloud } : { ...local };
+
+                    // Always preserve real local images over cloud placeholders
+                    if (winner.images && local.images) {
+                        winner.images = winner.images.map((img, i) => {
+                            if (img === '[IMG_TOO_LARGE]' && local.images[i] && local.images[i] !== '[IMG_TOO_LARGE]') {
+                                return local.images[i];
+                            }
+                            return img;
+                        });
+                        // If local has more images than winner
+                        if (local.images.length > winner.images.length) {
+                            for (let i = winner.images.length; i < local.images.length; i++) {
+                                if (local.images[i] && local.images[i] !== '[IMG_TOO_LARGE]') {
+                                    winner.images.push(local.images[i]);
+                                }
+                            }
+                        }
+                    }
+
+                    // Preserve pdfLink — prefer non-empty value
+                    if (!winner.pdfLink && (cloud.pdfLink || local.pdfLink)) {
+                        winner.pdfLink = cloud.pdfLink || local.pdfLink;
+                    }
+
+                    merged.push(winner);
+                }
+            });
+
+            // Sort by date (if available), then by name
+            merged.sort((a, b) => {
+                if (a.date && b.date) return a.date.localeCompare(b.date);
+                return (a.name || '').localeCompare(b.name || '');
+            });
+
+            return merged;
+        }
+
+        // Fetch latest data from GitHub and do smart merge
         async function cloudPull() {
             const token = getSyncToken();
             if (!token) return false;
@@ -2011,52 +2145,23 @@
                 const bytes = new Uint8Array(binaryStr.length);
                 for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
                 const content = JSON.parse(new TextDecoder('utf-8').decode(bytes));
-                // Only update if cloud has real data
+
                 if (content && content.tickets && content.transport) {
-                    const cloudTickets = content.tickets;
-                    const cloudTransport = content.transport;
+                    // Smart merge: per-ticket comparison using timestamps
+                    const mergedTickets = smartMerge(content.tickets, tickets);
+                    const mergedTransport = smartMerge(content.transport, transport);
 
-                    // Smart merge: use cloud data but preserve local images/PDFs
-                    // (cloud strips large files, so local is the source of truth for images)
-                    function mergeWithLocalImages(cloudArr, localArr) {
-                        const localMap = new Map(localArr.map(t => [t.id, t]));
-                        return cloudArr.map(ct => {
-                            const local = localMap.get(ct.id);
-                            if (local && ct.images) {
-                                // If cloud has placeholder markers, use local images instead
-                                const mergedImages = ct.images.map((img, i) => {
-                                    if (img === '[IMG_TOO_LARGE]' && local.images && local.images[i]) {
-                                        return local.images[i];
-                                    }
-                                    return img;
-                                });
-                                // If local has more images than cloud recorded
-                                if (local.images && local.images.length > ct.images.length) {
-                                    for (let i = ct.images.length; i < local.images.length; i++) {
-                                        mergedImages.push(local.images[i]);
-                                    }
-                                }
-                                return { ...ct, images: mergedImages };
-                            }
-                            return ct;
-                        });
-                    }
-
-                    const mergedTickets = mergeWithLocalImages(cloudTickets, tickets);
-                    const mergedTransport = mergeWithLocalImages(cloudTransport, transport);
-
-                    const localStr = JSON.stringify({tickets, transport});
-                    const cloudStr = JSON.stringify({tickets: mergedTickets, transport: mergedTransport});
-                    if (localStr !== cloudStr) {
-                        if (mergedTickets.length > 0 || mergedTransport.length > 0) {
-                            tickets = mergedTickets;
-                            transport = mergedTransport;
-                            localStorage.setItem('tickets', JSON.stringify(tickets));
-                            localStorage.setItem('transport', JSON.stringify(transport));
-                            updateStats();
-                            updateTabCounts();
-                            render();
-                        }
+                    // Only update if something changed
+                    const localStr = JSON.stringify({ tickets, transport });
+                    const mergedStr = JSON.stringify({ tickets: mergedTickets, transport: mergedTransport });
+                    if (localStr !== mergedStr) {
+                        tickets = mergedTickets;
+                        transport = mergedTransport;
+                        localStorage.setItem('tickets', JSON.stringify(tickets));
+                        localStorage.setItem('transport', JSON.stringify(transport));
+                        updateStats();
+                        updateTabCounts();
+                        render();
                     }
                 }
                 lastSyncTime = Date.now();
@@ -2090,10 +2195,17 @@
                     cloudSha = getResult.sha;
                 }
 
-                // Push data (strip large images to stay under GitHub size limit)
+                // Push data (strip large base64 images to stay under GitHub size limit)
+                const stripLargeImages = (arr) => arr.map(t => ({
+                    ...t,
+                    images: (t.images || []).map(img =>
+                        typeof img === 'string' && img.length > 50000 ? '[IMG_TOO_LARGE]' : img
+                    )
+                }));
+
                 const syncData = {
-                    tickets: tickets.map(t => ({...t, images: (t.images || []).map(img => img.length > 50000 ? '[IMG_TOO_LARGE]' : img)})),
-                    transport: transport.map(t => ({...t, images: (t.images || []).map(img => img.length > 50000 ? '[IMG_TOO_LARGE]' : img)})),
+                    tickets: stripLargeImages(tickets),
+                    transport: stripLargeImages(transport),
                     lastModified: Date.now()
                 };
                 const jsonStr = JSON.stringify(syncData, null, 2);
@@ -2183,9 +2295,11 @@
         loadFromURL();
 
         // Initial cloud sync (if token is already saved)
+        // Pull first to merge, then push to ensure cloud has all local data
         if (getSyncToken()) {
             cloudPull().then(success => {
-                if (success && (tickets.length > 0 || transport.length > 0)) {
+                if (success) {
+                    // After merging, push the merged result back
                     cloudPush();
                 }
             });
