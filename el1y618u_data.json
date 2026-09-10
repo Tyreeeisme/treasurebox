@@ -18,7 +18,7 @@
       "link": "官网：pinacotecabrera.org\n建议提前预约选时段",
       "images": [],
       "notes": "🟠 拉斐尔《圣母的婚礼》、曼特尼亚《哀悼基督》。D2 14:00场次。",
-      "purchased": false
+      "purchased": true
     },
     {
       "id": "italy03",
@@ -26,9 +26,11 @@
       "date": "2026-09-25",
       "venue": "米兰·米兰大教堂",
       "link": "官网：duomomilano.it\n建议买电梯联票（含教堂+登顶+博物馆）",
-      "images": [],
+      "images": [
+        "[IMG_TOO_LARGE]"
+      ],
       "notes": "🟠 D2。",
-      "purchased": false
+      "purchased": true
     },
     {
       "id": "italy04",
@@ -46,9 +48,13 @@
       "date": "2026-09-27",
       "venue": "佛罗伦萨",
       "link": "官网：b-ticket.com/b-ticket/uffizi\n与乌菲兹同一购票平台",
-      "images": [],
+      "images": [
+        "[IMG_TOO_LARGE]"
+      ],
       "notes": "🟠 米开朗基罗《大卫》雕塑原作。D4 09:00场次。",
-      "purchased": false
+      "purchased": true,
+      "lastModified": 1789066448288,
+      "pdfLink": ""
     },
     {
       "id": "italy06",
@@ -263,5 +269,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1789065961686
+  "lastModified": 1789066632883
 }
