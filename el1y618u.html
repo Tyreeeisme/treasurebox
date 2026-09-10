@@ -999,6 +999,12 @@
                 导入
                 <input type="file" id="importFile" accept=".json" style="display:none">
             </label>
+            <button class="sync-btn" id="resetTokenBtn" title="重新输入 GitHub Token（同步失败时使用）">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M15 7h3a5 5 0 015 5 5 5 0 01-5 5h-3m-6 0H6a5 5 0 01-5-5 5 5 0 015-5h3M8 12h8"/>
+                </svg>
+                重置Token
+            </button>
         </div>
 
         <div class="tickets-list" id="ticketsList"></div>
@@ -1932,7 +1938,8 @@
 
         // Sync Now button — pull first (merge), then push merged result
         document.getElementById('syncNowBtn').addEventListener('click', async () => {
-            if (!ensureToken()) {
+            const token = await ensureToken();
+            if (!token) {
                 showToast('需要 GitHub Token 才能同步', 3000);
                 return;
             }
@@ -1940,6 +1947,20 @@
             await cloudPull();   // pull & merge first
             await cloudPush();   // then push merged data
             showToast('同步完成！', 2000);
+        });
+
+        // Reset token button
+        document.getElementById('resetTokenBtn').addEventListener('click', async () => {
+            localStorage.removeItem('_sync_token');
+            showToast('Token 已清除，请重新输入', 2000);
+            updateSyncStatus('idle');
+            const token = await ensureToken();
+            if (token) {
+                showToast('正在用新 Token 同步...', 2000);
+                await cloudPull();
+                await cloudPush();
+                showToast('同步完成！', 2000);
+            }
         });
 
         // Share button: generate link (both datasets)
@@ -2035,18 +2056,49 @@
             localStorage.setItem('_sync_token', token);
         }
 
-        // Prompt for token if not set
-        function ensureToken() {
+        // Prompt for token if not set — use in-page dialog instead of prompt()
+        // prompt() on iOS Safari can be unreliable (auto-correct, smart quotes, etc.)
+        async function ensureToken() {
             let token = getSyncToken();
-            if (!token) {
-                token = prompt('首次使用云同步，请输入 GitHub Token：\n（获取方式：GitHub Settings → Developer settings → Personal access tokens）');
-                if (token && token.trim()) {
-                    setSyncToken(token.trim());
-                    return token.trim();
+            if (token) return token;
+
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:20px;';
+                const box = document.createElement('div');
+                box.style.cssText = 'background:white;border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.3);';
+                box.innerHTML = `
+                    <h3 style="margin:0 0 8px;font-size:1.1rem;">首次同步 — 输入 GitHub Token</h3>
+                    <p style="margin:0 0 16px;font-size:0.85rem;color:#666;">GitHub Settings → Developer settings → Personal access tokens</p>
+                    <input id="_tokenInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                        placeholder="ghp_xxxxxxxxxxxx"
+                        style="width:100%;padding:12px;border:1.5px solid #ddd;border-radius:8px;font-size:0.95rem;font-family:monospace;box-sizing:border-box;">
+                    <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;">
+                        <button id="_tokenCancel" style="padding:8px 18px;border:1px solid #ddd;background:white;border-radius:8px;cursor:pointer;font-size:0.9rem;">取消</button>
+                        <button id="_tokenOk" style="padding:8px 18px;background:#c44536;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.9rem;">确认</button>
+                    </div>
+                `;
+                overlay.appendChild(box);
+                document.body.appendChild(overlay);
+
+                const input = document.getElementById('_tokenInput');
+                input.focus();
+
+                function finish(val) {
+                    document.body.removeChild(overlay);
+                    if (val && val.trim()) {
+                        const clean = val.trim().replace(/[‘’“”]/g, '');
+                        setSyncToken(clean);
+                        resolve(clean);
+                    } else {
+                        resolve(null);
+                    }
                 }
-                return null;
-            }
-            return token;
+
+                document.getElementById('_tokenOk').onclick = () => finish(input.value);
+                document.getElementById('_tokenCancel').onclick = () => finish(null);
+                input.addEventListener('keydown', (e) => { if (e.key === 'Enter') finish(input.value); });
+            });
         }
 
         let cloudSha = null;
@@ -2174,7 +2226,16 @@
                     },
                     cache: 'no-store'
                 });
-                if (!resp.ok) return false;
+                if (!resp.ok) {
+                    const errText = await resp.text().catch(() => '');
+                    console.error('Cloud pull HTTP error:', resp.status, errText);
+                    if (resp.status === 401 || resp.status === 403) {
+                        showToast('Token 无效或已过期，请重新输入', 4000);
+                        localStorage.removeItem('_sync_token');
+                    }
+                    updateSyncStatus('error');
+                    return false;
+                }
                 const result = await resp.json();
                 cloudSha = result.sha;
                 const rawBase64 = result.content.replace(/\s/g, '');
@@ -2272,6 +2333,15 @@
                     lastSyncTime = Date.now();
                     updateSyncStatus('synced');
                 } else {
+                    console.error('Cloud push HTTP error:', putResp.status);
+                    if (putResp.status === 401 || putResp.status === 403) {
+                        showToast('Token 无效或已过期，请重新输入', 4000);
+                        localStorage.removeItem('_sync_token');
+                    } else if (putResp.status === 409) {
+                        // SHA conflict — re-pull and retry
+                        showToast('数据冲突，正在重新同步...', 2000);
+                        await cloudPull();
+                    }
                     updateSyncStatus('error');
                 }
             } catch (e) {
