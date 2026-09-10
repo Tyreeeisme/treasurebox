@@ -106,7 +106,8 @@
       "link": "官网：federicosecondo.org\n建议官网预约",
       "images": [],
       "notes": "🟠 拜占庭金色马赛克巅峰之作。D9。",
-      "purchased": false
+      "purchased": true,
+      "lastModified": 1789067957168
     },
     {
       "id": "italy10",
@@ -285,5 +286,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1789067954475
+  "lastModified": 1789067959742
 }
