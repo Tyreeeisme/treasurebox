@@ -34,8 +34,8 @@
         "[IMG_TOO_LARGE]"
       ],
       "notes": "🟠 D2。",
-      "purchased": false,
-      "lastModified": 1789067050650
+      "purchased": true,
+      "lastModified": 1789067550368
     },
     {
       "id": "italy04",
@@ -282,5 +282,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1789067466363
+  "lastModified": 1789067552940
 }
