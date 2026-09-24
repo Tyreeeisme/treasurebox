@@ -132,8 +132,8 @@
       "link": "官网：ticketing.colosseo.it\n含斗兽场+古罗马广场+帕拉蒂尼山\n需护照原件入场",
       "images": [],
       "notes": "🔴 强制预约！D14。",
-      "purchased": true,
-      "lastModified": 1790248224937
+      "purchased": false,
+      "lastModified": 1790248249219
     },
     {
       "id": "italy12",
@@ -294,5 +294,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1790248240002
+  "lastModified": 1790248251463
 }
