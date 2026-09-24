@@ -95,9 +95,9 @@
       "link": "官网：vivaticket.com\n2026/3起唯一官方渠道\n线上购票扫码入园",
       "images": [],
       "notes": "🟠 悲剧诗人之家、秘仪庄园。D8。",
-      "purchased": false,
+      "purchased": true,
       "pdfLink": "https://shop.vivaticket.com/online_ticket/printAtHome.php?tkcode=TL50S1000717320684&system=154&key=a18009f55f511c7d4696e1afa40dddfa",
-      "lastModified": 1790248129648
+      "lastModified": 1790248226442
     },
     {
       "id": "italy09",
@@ -121,7 +121,8 @@
       "link": "官网：parchiarcheologici.regione.sicilia.it\n可现场购票，旺季建议线上",
       "images": [],
       "notes": "🟢 以伊奥尼亚海为背景，远眺埃特纳火山。D11。",
-      "purchased": false
+      "purchased": true,
+      "lastModified": 1790248225739
     },
     {
       "id": "italy11",
@@ -131,7 +132,8 @@
       "link": "官网：ticketing.colosseo.it\n含斗兽场+古罗马广场+帕拉蒂尼山\n需护照原件入场",
       "images": [],
       "notes": "🔴 强制预约！D14。",
-      "purchased": false
+      "purchased": true,
+      "lastModified": 1790248224937
     },
     {
       "id": "italy12",
@@ -292,5 +294,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1790248222176
+  "lastModified": 1790248228832
 }
