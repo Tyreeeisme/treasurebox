@@ -94,9 +94,9 @@
       "link": "官网：vivaticket.com\n2026/3起唯一官方渠道\n线上购票扫码入园",
       "images": [],
       "notes": "🟠 悲剧诗人之家、秘仪庄园。D8。",
-      "purchased": true,
+      "purchased": false,
       "pdfLink": "https://shop.vivaticket.com/online_ticket/printAtHome.php?tkcode=TL50S1000717320684&system=154&key=a18009f55f511c7d4696e1afa40dddfa",
-      "lastModified": 1789067892429
+      "lastModified": 1790248129648
     },
     {
       "id": "italy09",
@@ -291,5 +291,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1790247562124
+  "lastModified": 1790248131968
 }
