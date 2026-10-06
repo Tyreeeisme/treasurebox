@@ -121,8 +121,8 @@
       "link": "官网：parchiarcheologici.regione.sicilia.it\n可现场购票，旺季建议线上",
       "images": [],
       "notes": "🟢 以伊奥尼亚海为背景，远眺埃特纳火山。D11。",
-      "purchased": false,
-      "lastModified": 1790248234126
+      "purchased": true,
+      "lastModified": 1791287634631
     },
     {
       "id": "italy11",
@@ -294,5 +294,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1791287576717
+  "lastModified": 1791287637995
 }
