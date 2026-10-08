@@ -155,8 +155,8 @@
         "[IMG_TOO_LARGE]"
       ],
       "notes": "🔴 强制预约！米开朗基罗《创世纪》《末日审判》。15:00",
-      "purchased": true,
-      "lastModified": 1789067300665,
+      "purchased": false,
+      "lastModified": 1791462407155,
       "pdfLink": ""
     },
     {
@@ -294,5 +294,5 @@
       "purchased": false
     }
   ],
-  "lastModified": 1791462395101
+  "lastModified": 1791462409608
 }
